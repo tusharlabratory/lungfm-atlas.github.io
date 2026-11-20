@@ -7,4 +7,5 @@ rm -rf "$HERE/public/data" && mkdir -p "$HERE/public/data"
 cp -r "$SRC"/. "$HERE/public/data/"
 mkdir -p "$HERE/src/data"
 for f in meta tasks cohorts models task_models setups_index guidance; do cp "$SRC/$f.json" "$HERE/src/data/$f.json"; done
+cp "$SRC/cases/cases.json" "$HERE/src/data/cases.json"
 echo "synced $(find "$HERE/public/data" -type f | wc -l) files"

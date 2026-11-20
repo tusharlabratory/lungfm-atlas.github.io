@@ -1,0 +1,101 @@
+---
+// Paper 1 Figure 6C as a web gallery: eight nodules (two screening cohorts x four groups), each CT section with the
+// percentile of six scores. Images and values come from p41_site_cases.py (same cases and framing as the paper).
+import cases from "../data/cases.json";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const F = "DM Sans, Arial, sans-serif";
+const COL: Record<string, string> = { D: "#AB0520", B: "#106AB1", S: "#0C234B", F1: "#81CEEB", F2: "#A4AD86", F3: "#C9B6E8" };
+const GROUPS = ["a", "b", "c", "d"];
+const COHORTS = ["DLCS24", "LUNA25-Dev"];
+const head = (c: string) => cases.find((x) => x.cell === c)!;
+const byKey = (coh: string, c: string) => cases.find((x) => x.cohort === coh && x.cell === c)!;
+const sel = Object.fromEntries(COHORTS.map((c) => [c, byKey(c, "a").scores.find((s) => s.code === "S")!.name.replace(/^Selected \((.*)\)$/, "$1")]));
+const fx = byKey("DLCS24", "a").scores.filter((s) => s.code.startsWith("F")).map((s) => `${s.code}, ${s.name}`);
+
+function band(cs: (typeof cases)[number]) {
+  const W = 320, H = 74, blocks = [["D", "B", "S"], ["F1", "F2", "F3"]];
+  let g = "";
+  blocks.forEach((codes, b) => {
+    const x0 = 10 + b * 158, tx0 = x0 + 22, tx1 = x0 + 112;
+    const X = (p: number) => tx0 + (p / 100) * (tx1 - tx0);
+    g += `<rect x="${X(cs.cut_pct)}" y="6" width="${tx1 - X(cs.cut_pct)}" height="${H - 12}" fill="#AB0520" fill-opacity=".45"/>`;
+    g += `<line x1="${X(cs.cut_pct)}" x2="${X(cs.cut_pct)}" y1="6" y2="${H - 6}" stroke="#fff" stroke-width="1" stroke-dasharray="3 2"/>`;
+    codes.forEach((code, i) => {
+      const s = cs.scores.find((q) => q.code === code)!;
+      const y = 17 + i * 20;
+      g += `<text x="${x0}" y="${y + 4}" font-family="${F}" font-size="12" fill="#fff"${code === "S" ? ' font-weight="700"' : ""}>${code}</text>`;
+      g += `<line x1="${tx0}" x2="${tx1}" y1="${y}" y2="${y}" stroke="#8C8C8C" stroke-width="1"/>`;
+      g += `<circle cx="${X(s.percentile)}" cy="${y}" r="5.5" fill="${s.flagged ? COL[code] : "none"}" stroke="#fff" stroke-width="1.4"><title>${s.name}: percentile ${s.percentile.toFixed(0)}${s.flagged ? ", flagged" : ", not flagged"}</title></circle>`;
+      g += `<text x="${tx1 + 8}" y="${y + 4}" font-family="${F}" font-size="12" fill="#fff"${s.flagged ? ' font-weight="700"' : ""}>${s.percentile.toFixed(0)}</text>`;
+    });
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Score percentiles within the cohort">${g}</svg>`;
+}
+function overlay(cs: (typeof cases)[number]) {
+  // arrow, 10-mm bar and diameter as in the paper figure (positions as fractions of the image)
+  const n = 100, bar = (10 / cs.fov_mm) * n;
+  return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ov" aria-hidden="true">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#F6C342"/></marker></defs>
+    <line x1="22" y1="55" x2="41.5" y2="40.5" stroke="#F6C342" stroke-width="1.1" marker-end="url(#ah)" vector-effect="non-scaling-stroke" style="stroke-width:2.2px"/>
+    <line x1="6" y1="6" x2="${6 + bar}" y2="6" stroke="#000" stroke-width="2.6" vector-effect="non-scaling-stroke" style="stroke-width:5px"/>
+    <line x1="6" y1="6" x2="${6 + bar}" y2="6" stroke="#fff" vector-effect="non-scaling-stroke" style="stroke-width:3px"/></svg>`;
+}
+---
+<div class="cg">
+  <div class="cgscroll">
+    <div class="cggrid">
+      <div></div>
+      {GROUPS.map((c) => <div class="colhead"><b>{head(c).group}</b><span>{head(c).description}</span></div>)}
+      {COHORTS.map((coh) => (
+        <>
+          <div class="rowhead"><span>{coh}</span></div>
+          {GROUPS.map((c) => {
+            const cs = byKey(coh, c);
+            return (
+              <figure class="tile">
+                <div class="img">
+                  <img src={`${base}/data/${cs.image}`} alt={`Axial CT section, lung window: ${cs.group.toLowerCase()} nodule, ${cs.diameter_mm} mm, ${cs.description.toLowerCase()}, ${coh}`} loading="lazy" width="520" height="520" />
+                  <Fragment set:html={overlay(cs)} />
+                  <span class="mm10">10 mm</span><span class="diam">{cs.diameter_mm.toFixed(1)} mm</span>
+                </div>
+                <div class="band" set:html={band(cs)} />
+              </figure>
+            );
+          })}
+        </>
+      ))}
+    </div>
+  </div>
+  <div class="cglegend">
+    <span><b>D</b>, diameter</span><span><b>B</b>, Brock model</span><span><b>S</b>, selected FM setup ({sel["DLCS24"]} in DLCS24; {sel["LUNA25-Dev"]} in LUNA25-Dev)</span>
+    {fx.map((f) => <span><b>{f.split(",")[0]}</b>,{f.slice(f.indexOf(",") + 1)}</span>)}
+  </div>
+  <div class="cglegend">
+    <span><i class="zone"></i>Flagged: the score's top {head("a").flagged} of {head("a").nodules} in DLCS24 and {byKey("LUNA25-Dev", "a").flagged} of {byKey("LUNA25-Dev", "a").nodules} in LUNA25-Dev, the same number as the 8-mm threshold</span>
+    <span><b>Values</b>, score percentile within the cohort; filled dot and bold value, flagged</span>
+  </div>
+  <p class="cgnote">Axial CT sections, lung window; arrow, nodule; bar, 10 mm. One nodule drawn at random per cohort (rows) in each of four groups (columns), from nodules of at least 6 mm in participants with one analyzed nodule; one DLCS24 hilar cancer not separable from the hilum was skipped. The examples are illustrative, not representative. Post hoc. From Paper 1, Figure 6C. Images: Duke Lung Cancer Screening Dataset (<a href="https://doi.org/10.48550/arXiv.2405.04605">Tushar et al</a>) and LUNA25 challenge development set (<a href="https://doi.org/10.1148/ryai.260179">Peeters et al</a>), deidentified public data.</p>
+</div>
+
+<style>
+  .cg { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .cgscroll { overflow-x: auto; }
+  .cggrid { display: grid; grid-template-columns: 26px repeat(4, minmax(200px, 1fr)); gap: 10px; min-width: 860px; }
+  .colhead { text-align: center; padding-bottom: 4px; }
+  .colhead b { display: block; font-family: var(--font-head); font-size: 1.1rem; color: var(--head); }
+  .colhead span { font-size: .8rem; color: var(--muted); }
+  .rowhead { display: flex; align-items: center; justify-content: center; }
+  .rowhead span { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 700; color: var(--head); font-size: .95rem; }
+  .tile { margin: 0; background: #000; border-radius: 6px; overflow: hidden; }
+  .img { position: relative; aspect-ratio: 1; }
+  .img img { width: 100%; height: 100%; display: block; }
+  .img :global(svg.ov) { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .mm10, .diam { position: absolute; top: 8%; color: #fff; font-size: .78rem; text-shadow: 0 0 3px #000, 0 0 2px #000; }
+  .mm10 { left: 6%; }
+  .diam { right: 4%; top: 3%; font-weight: 700; font-size: .85rem; }
+  .band { background: #161616; }
+  .band :global(svg) { width: 100%; height: auto; display: block; }
+  .cglegend { display: flex; flex-wrap: wrap; gap: 6px 20px; justify-content: center; font-size: .84rem; color: var(--ink); margin-top: 12px; }
+  .zone { display: inline-block; width: 22px; height: 12px; background: #5C0A16; vertical-align: -1px; margin-right: 6px; border-radius: 2px; }
+  .cgnote { font-size: .78rem; color: var(--muted); margin: 12px 0 0; }
+</style>

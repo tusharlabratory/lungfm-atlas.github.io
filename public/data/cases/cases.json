@@ -1,0 +1,410 @@
+[
+ {
+  "cohort": "DLCS24",
+  "cell": "a",
+  "group": "Malignant",
+  "description": "Flagged by the FM setup only",
+  "label": 1,
+  "diameter_mm": 7.8,
+  "image": "cases/case_DLCS24_a.png",
+  "fov_mm": 46.41,
+  "cut_pct": 77.6604,
+  "flagged": 550,
+  "nodules": 2462,
+  "scores": [
+   {
+    "code": "D",
+    "name": "Diameter",
+    "percentile": 76.3404,
+    "flagged": false
+   },
+   {
+    "code": "B",
+    "name": "Brock model",
+    "percentile": 79.9147,
+    "flagged": true
+   },
+   {
+    "code": "S",
+    "name": "Selected (Sybil)",
+    "percentile": 82.3111,
+    "flagged": true
+   },
+   {
+    "code": "F1",
+    "name": "Pillar0-ChestCT",
+    "percentile": 82.5142,
+    "flagged": true
+   },
+   {
+    "code": "F2",
+    "name": "Jolia",
+    "percentile": 49.6954,
+    "flagged": false
+   },
+   {
+    "code": "F3",
+    "name": "nnFoundation-ViT",
+    "percentile": 59.8497,
+    "flagged": false
+   }
+  ]
+ },
+ {
+  "cohort": "DLCS24",
+  "cell": "b",
+  "group": "Malignant",
+  "description": "Flagged by the 8-mm threshold only",
+  "label": 1,
+  "diameter_mm": 9.0,
+  "image": "cases/case_DLCS24_b.png",
+  "fov_mm": 46.41,
+  "cut_pct": 77.6604,
+  "flagged": 550,
+  "nodules": 2462,
+  "scores": [
+   {
+    "code": "D",
+    "name": "Diameter",
+    "percentile": 82.9407,
+    "flagged": true
+   },
+   {
+    "code": "B",
+    "name": "Brock model",
+    "percentile": 80.0366,
+    "flagged": true
+   },
+   {
+    "code": "S",
+    "name": "Selected (Sybil)",
+    "percentile": 77.437,
+    "flagged": false
+   },
+   {
+    "code": "F1",
+    "name": "Pillar0-ChestCT",
+    "percentile": 93.7246,
+    "flagged": true
+   },
+   {
+    "code": "F2",
+    "name": "Jolia",
+    "percentile": 81.6613,
+    "flagged": true
+   },
+   {
+    "code": "F3",
+    "name": "nnFoundation-ViT",
+    "percentile": 81.9456,
+    "flagged": true
+   }
+  ]
+ },
+ {
+  "cohort": "DLCS24",
+  "cell": "c",
+  "group": "Malignant",
+  "description": "Flagged by neither",
+  "label": 1,
+  "diameter_mm": 6.9,
+  "image": "cases/case_DLCS24_c.png",
+  "fov_mm": 46.41,
+  "cut_pct": 77.6604,
+  "flagged": 550,
+  "nodules": 2462,
+  "scores": [
+   {
+    "code": "D",
+    "name": "Diameter",
+    "percentile": 70.0244,
+    "flagged": false
+   },
+   {
+    "code": "B",
+    "name": "Brock model",
+    "percentile": 51.2388,
+    "flagged": false
+   },
+   {
+    "code": "S",
+    "name": "Selected (Sybil)",
+    "percentile": 14.8457,
+    "flagged": false
+   },
+   {
+    "code": "F1",
+    "name": "Pillar0-ChestCT",
+    "percentile": 97.827,
+    "flagged": true
+   },
+   {
+    "code": "F2",
+    "name": "Jolia",
+    "percentile": 77.7214,
+    "flagged": true
+   },
+   {
+    "code": "F3",
+    "name": "nnFoundation-ViT",
+    "percentile": 71.9943,
+    "flagged": false
+   }
+  ]
+ },
+ {
+  "cohort": "DLCS24",
+  "cell": "d",
+  "group": "Benign",
+  "description": "Flagged by both",
+  "label": 0,
+  "diameter_mm": 8.2,
+  "image": "cases/case_DLCS24_d.png",
+  "fov_mm": 46.41,
+  "cut_pct": 77.6604,
+  "flagged": 550,
+  "nodules": 2462,
+  "scores": [
+   {
+    "code": "D",
+    "name": "Diameter",
+    "percentile": 78.6149,
+    "flagged": true
+   },
+   {
+    "code": "B",
+    "name": "Brock model",
+    "percentile": 75.1625,
+    "flagged": false
+   },
+   {
+    "code": "S",
+    "name": "Selected (Sybil)",
+    "percentile": 84.5045,
+    "flagged": true
+   },
+   {
+    "code": "F1",
+    "name": "Pillar0-ChestCT",
+    "percentile": 81.905,
+    "flagged": true
+   },
+   {
+    "code": "F2",
+    "name": "Jolia",
+    "percentile": 88.6068,
+    "flagged": true
+   },
+   {
+    "code": "F3",
+    "name": "nnFoundation-ViT",
+    "percentile": 74.3501,
+    "flagged": false
+   }
+  ]
+ },
+ {
+  "cohort": "LUNA25-Dev",
+  "cell": "a",
+  "group": "Malignant",
+  "description": "Flagged by the FM setup only",
+  "label": 1,
+  "diameter_mm": 7.8,
+  "image": "cases/case_LUNA25-Dev_a.png",
+  "fov_mm": 46.41,
+  "cut_pct": 71.9979,
+  "flagged": 1567,
+  "nodules": 5596,
+  "scores": [
+   {
+    "code": "D",
+    "name": "Diameter",
+    "percentile": 69.639,
+    "flagged": false
+   },
+   {
+    "code": "B",
+    "name": "Brock model",
+    "percentile": 83.8367,
+    "flagged": true
+   },
+   {
+    "code": "S",
+    "name": "Selected (Pillar0-ChestCT)",
+    "percentile": 81.1919,
+    "flagged": true
+   },
+   {
+    "code": "F1",
+    "name": "Pillar0-ChestCT",
+    "percentile": 81.1919,
+    "flagged": true
+   },
+   {
+    "code": "F2",
+    "name": "Jolia",
+    "percentile": 94.0404,
+    "flagged": true
+   },
+   {
+    "code": "F3",
+    "name": "nnFoundation-ViT",
+    "percentile": 88.5722,
+    "flagged": true
+   }
+  ]
+ },
+ {
+  "cohort": "LUNA25-Dev",
+  "cell": "b",
+  "group": "Malignant",
+  "description": "Flagged by the 8-mm threshold only",
+  "label": 1,
+  "diameter_mm": 15.4,
+  "image": "cases/case_LUNA25-Dev_b.png",
+  "fov_mm": 46.41,
+  "cut_pct": 71.9979,
+  "flagged": 1567,
+  "nodules": 5596,
+  "scores": [
+   {
+    "code": "D",
+    "name": "Diameter",
+    "percentile": 94.5765,
+    "flagged": true
+   },
+   {
+    "code": "B",
+    "name": "Brock model",
+    "percentile": 89.6623,
+    "flagged": true
+   },
+   {
+    "code": "S",
+    "name": "Selected (Pillar0-ChestCT)",
+    "percentile": 35.1948,
+    "flagged": false
+   },
+   {
+    "code": "F1",
+    "name": "Pillar0-ChestCT",
+    "percentile": 35.1948,
+    "flagged": false
+   },
+   {
+    "code": "F2",
+    "name": "Jolia",
+    "percentile": 66.8603,
+    "flagged": false
+   },
+   {
+    "code": "F3",
+    "name": "nnFoundation-ViT",
+    "percentile": 94.094,
+    "flagged": true
+   }
+  ]
+ },
+ {
+  "cohort": "LUNA25-Dev",
+  "cell": "c",
+  "group": "Malignant",
+  "description": "Flagged by neither",
+  "label": 1,
+  "diameter_mm": 8.0,
+  "image": "cases/case_LUNA25-Dev_c.png",
+  "fov_mm": 46.41,
+  "cut_pct": 71.9979,
+  "flagged": 1567,
+  "nodules": 5596,
+  "scores": [
+   {
+    "code": "D",
+    "name": "Diameter",
+    "percentile": 71.9889,
+    "flagged": false
+   },
+   {
+    "code": "B",
+    "name": "Brock model",
+    "percentile": 87.4643,
+    "flagged": true
+   },
+   {
+    "code": "S",
+    "name": "Selected (Pillar0-ChestCT)",
+    "percentile": 56.871,
+    "flagged": false
+   },
+   {
+    "code": "F1",
+    "name": "Pillar0-ChestCT",
+    "percentile": 56.871,
+    "flagged": false
+   },
+   {
+    "code": "F2",
+    "name": "Jolia",
+    "percentile": 61.9818,
+    "flagged": false
+   },
+   {
+    "code": "F3",
+    "name": "nnFoundation-ViT",
+    "percentile": 81.7102,
+    "flagged": true
+   }
+  ]
+ },
+ {
+  "cohort": "LUNA25-Dev",
+  "cell": "d",
+  "group": "Benign",
+  "description": "Flagged by both",
+  "label": 0,
+  "diameter_mm": 13.1,
+  "image": "cases/case_LUNA25-Dev_d.png",
+  "fov_mm": 46.41,
+  "cut_pct": 71.9979,
+  "flagged": 1567,
+  "nodules": 5596,
+  "scores": [
+   {
+    "code": "D",
+    "name": "Diameter",
+    "percentile": 91.4671,
+    "flagged": true
+   },
+   {
+    "code": "B",
+    "name": "Brock model",
+    "percentile": 86.0168,
+    "flagged": true
+   },
+   {
+    "code": "S",
+    "name": "Selected (Pillar0-ChestCT)",
+    "percentile": 90.3413,
+    "flagged": true
+   },
+   {
+    "code": "F1",
+    "name": "Pillar0-ChestCT",
+    "percentile": 90.3413,
+    "flagged": true
+   },
+   {
+    "code": "F2",
+    "name": "Jolia",
+    "percentile": 79.7445,
+    "flagged": true
+   },
+   {
+    "code": "F3",
+    "name": "nnFoundation-ViT",
+    "percentile": 88.0718,
+    "flagged": true
+   }
+  ]
+ }
+]

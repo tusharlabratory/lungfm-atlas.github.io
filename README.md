@@ -6,7 +6,7 @@ Brock model, radiomics and a random-weight encoder.
 
 **Website:** https://tusharlabratory.github.io/lungfm-atlas.github.io/
 
-All numbers are aggregated study results (AUC with 95% confidence intervals); no participant-level data are included.
+All numbers are aggregated study results (AUC with 95% confidence intervals). The only images are eight illustrative CT sections from the deidentified public DLCS24 and LUNA25 datasets (Paper 1 Figure 6C; `paper1_benchmark/scripts/p41_site_cases.py`).
 The images and labels remain with their original sources, listed on the About page.
 
 ## Pages
