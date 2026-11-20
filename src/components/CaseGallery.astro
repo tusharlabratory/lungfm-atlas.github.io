@@ -45,7 +45,7 @@ function overlay(cs: (typeof cases)[number]) {
   <div class="cgscroll">
     <div class="cggrid">
       <div></div>
-      {GROUPS.map((c) => <div class="colhead"><b>{head(c).group}</b><span>{head(c).description}</span></div>)}
+      {GROUPS.map((c) => <div class="colhead"><b>{head(c).group}</b></div>)}
       {COHORTS.map((coh) => (
         <>
           <div class="rowhead"><span>{coh}</span></div>
