@@ -2,7 +2,6 @@
 import Base from "../layouts/Base.astro";
 import meta from "../data/meta.json";
 import Findings from "../components/Findings.astro";
-import PerThousand from "../components/PerThousand.astro";
 import CaseGallery from "../components/CaseGallery.astro";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const stats = [
@@ -51,9 +50,6 @@ const sections = [
       <h2 style="margin-top:0">Key findings</h2>
       <p class="muted" style="max-width:820px">Six results from the two articles. Each number comes straight from the papers; open "Full statement" for the exact wording. AUC = area under the receiver operating characteristic curve; error bars are 95% CIs.</p>
       <Findings />
-      <h3 style="font-size:1.35rem;margin:30px 0 4px">What this means per 1000 screening nodules</h3>
-      <p class="muted" style="max-width:860px;margin-bottom:14px">The clinical operating point in the two screening cohorts: each score compared with the common rule of flagging nodules 8 mm or larger.</p>
-      <PerThousand />
       <h3 style="font-size:1.35rem;margin:30px 0 4px">Example nodules</h3>
       <p class="muted" style="max-width:860px;margin-bottom:14px">Eight screening nodules and where each score ranks them in their cohort: cancers flagged by the foundation model only, by the 8-mm threshold only, or by neither, and a benign nodule flagged by both.</p>
       <CaseGallery />
