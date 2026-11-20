@@ -1,0 +1,75 @@
+---
+import Base from "../layouts/Base.astro";
+import meta from "../data/meta.json";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const stats = [
+  [meta.encoders, "public CT foundation models"], [meta.tasks, "lung cancer prediction tasks"],
+  [meta.cohorts, "public CT cohorts"], [meta.participants, "participants"],
+  [meta.units, "nodules or tumors"], [meta.setups, "model setups evaluated"],
+];
+const sections = [
+  ["Explorer", "/explorer", "Heat map of every foundation model across every task: AUC, and the difference from nodule diameter, the Brock model, radiomics or the best comparator."],
+  ["Models", "/models", "One card per encoder: architecture, pretraining data, pretraining overlap with the study cohorts and performance across all tasks."],
+  ["Tasks and cohorts", "/tasks", "Each task and cohort: labels, size and source, with every encoder and comparator on the same test participants."],
+  ["Model setups", "/setups", "All encoder × feature form × classifier combinations for a task, the setup selected in training data and the range expected by chance."],
+  ["Which model?", "/guide", "Practical starting points and checks drawn from both papers, with the evidence behind each."],
+  ["About and data", "/about", "Methods in brief, limitations, how to cite and downloadable result tables."],
+];
+---
+<Base title="LungFM Atlas" active="/">
+  <section class="hero">
+    <div class="wrap">
+      <span class="badge">Open benchmark · Lung cancer · CT</span>
+      <h1>LungFM Atlas</h1>
+      <p class="lead">How well do publicly available CT foundation models predict lung cancer outcomes when used as frozen feature extractors? Explore {meta.encoders} encoders across {meta.tasks} tasks in {meta.cohorts} public cohorts, compared with nodule diameter, the Brock model and radiomics.</p>
+      <div class="stats">
+        {stats.map(([n, l]) => <div class="stat"><b>{n}</b><span>{l}</span></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap two">
+      <div>
+        <h2 style="margin-top:0">Key findings</h2>
+        <ol class="findings">
+          {meta.key_points1.map((k) => <li>{k}</li>)}
+          {meta.key_points1b.map((k) => <li>{k}</li>)}
+        </ol>
+      </div>
+      <div>
+        <h2 style="margin-top:0">In one sentence</h2>
+        <div class="card" style="margin-bottom:14px">
+          <div class="kicker">Clinical value</div>
+          <p style="margin:.4em 0 0">{meta.summary1}</p>
+        </div>
+        <div class="card">
+          <div class="kicker">What drives performance</div>
+          <p style="margin:.4em 0 0">{meta.summary1b}</p>
+        </div>
+        <p class="note" style="margin-top:16px">Statements are quoted from the two companion articles. Areas under the receiver operating characteristic curve (AUC) are shown with 95% confidence intervals throughout the site.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--panel)">
+    <div class="wrap">
+      <h2 style="margin-top:0">Explore the results</h2>
+      <div class="grid">
+        {sections.map(([t, href, d]) => (
+          <a class="card" href={`${base}${href}/`}><div class="kicker">Explore</div><h3>{t}</h3><p class="muted" style="margin:0">{d}</p></a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 style="margin-top:0">The studies</h2>
+      <div class="grid">
+        <div class="card"><div class="kicker">Article 1 · clinical value</div><h3>{meta.title1}</h3><p class="muted" style="margin:0">Preprint link coming soon.</p></div>
+        <div class="card"><div class="kicker">Article 2 · what drives performance</div><h3>{meta.title1b}</h3><p class="muted" style="margin:0">Preprint link coming soon.</p></div>
+      </div>
+    </div>
+  </section>
+</Base>

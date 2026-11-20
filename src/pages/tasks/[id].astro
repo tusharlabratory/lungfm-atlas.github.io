@@ -1,0 +1,67 @@
+---
+import Base from "../../layouts/Base.astro";
+import Forest from "../../components/Forest.astro";
+import tasks from "../../data/tasks.json";
+import cohorts from "../../data/cohorts.json";
+import cells from "../../data/task_models.json";
+
+export function getStaticPaths() {
+  return tasks.map((t) => ({ params: { id: t.id }, props: { t } }));
+}
+const { t } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const co = cohorts.find((c) => c.name === t.cohort)!;
+const mine = cells.filter((c) => c.task === t.id);
+const COL: Record<string, string> = { "Diameter": "#ab0520", "Diameter-only logistic model": "#5d0000", "Brock model": "#106ab1",
+  "Radiomics": "#7f8b5a", "Random-weight encoder": "#8c8c8c" };
+const enc = mine.filter((c) => c.kind === "encoder").sort((a, b) => (b.excluded ? -1 : b.auc[0]) - (a.excluded ? -1 : a.auc[0]));
+const comp = mine.filter((c) => c.kind !== "encoder").sort((a, b) => b.auc[0] - a.auc[0]);
+const rows = [
+  { label: "Selected FM setup", est: t.selected[0], lo: t.selected[1], hi: t.selected[2], bold: true, color: "#0c234b" },
+  ...comp.map((c, i) => ({ label: c.model, est: c.auc[0], lo: c.auc[1], hi: c.auc[2], color: COL[c.model] ?? "#545f6b",
+    sep: i === 0, bold: c.best_comparator === true, sub: c.best_comparator === true ? "best comparator" : "" })),
+  ...enc.map((c, i) => ({ label: c.model, est: c.excluded ? null : c.auc[0], lo: c.excluded ? null : c.auc[1],
+    hi: c.excluded ? null : c.auc[2], color: "#1e5288", hollow: true, sep: i === 0, sub: c.excluded ? "excluded: pretraining overlap" : "" })),
+];
+const vals = rows.flatMap((r) => [r.lo, r.hi]).filter((x): x is number => x != null);
+const xmin = Math.max(0, Math.floor((Math.min(...vals) - 0.02) * 10) / 10), xmax = Math.min(1, Math.ceil((Math.max(...vals) + 0.02) * 10) / 10);
+const c2 = (a: number[]) => `${a[0].toFixed(2)} (${a[1].toFixed(2)}, ${a[2].toFixed(2)})`;
+const setupName = t.selected_setup.replace(/\|/g, " · ");
+const others = tasks.filter((x) => x.cohort === t.cohort && x.id !== t.id);
+---
+<Base title={`${t.cohort}: ${t.task}`} active="/tasks" description={`${t.task} in ${t.cohort}: CT foundation models and comparators.`}>
+  <div class="page-head"><div class="wrap">
+    <p style="margin-bottom:6px"><a href={`${base}/tasks/`}>← All tasks</a></p>
+    <h1>{t.cohort} · {t.task}</h1>
+    <p>{t.group} · {t.main_setting === "External test" ? "external test cohort" : "within cohort (no external test cohort)"} · {t.n} nodules or tumors ({t.n_pos} positive) from {t.participants} participants</p>
+  </div></div>
+  <div class="wrap">
+    <section class="two">
+      <div>
+        <h2 style="margin-top:0">Result</h2>
+        <div class="card">
+          <div class="kicker">Selected FM setup · {t.metric} (95% CI)</div>
+          <div style="font-size:1.8rem;font-weight:800;color:var(--az-blue);font-variant-numeric:tabular-nums">{c2(t.selected)}</div>
+          <p class="muted" style="margin:.3em 0 0">Chosen by inner cross-validation in the training data only: {setupName}. Range expected by chance: {t.chance[0] != null ? `${t.chance[0].toFixed(2)}–${t.chance[1].toFixed(2)}` : "not available"}.</p>
+        </div>
+        <p style="margin-top:14px"><a href={`${base}/setups/?task=${t.id}`}>See all {t.main_setting === "External test" ? "external test" : "within-cohort"} model setups for this task →</a></p>
+        {others.length > 0 && <p class="muted">Other tasks in {t.cohort}: {others.map((o, i) => <>{i ? ", " : ""}<a href={`${base}/tasks/${o.id}/`}>{o.task}</a></>)}</p>}
+      </div>
+      <div>
+        <h2 style="margin-top:0">Cohort</h2>
+        <table class="tbl">
+          <tr><td style="width:36%;color:var(--muted);font-weight:600">Source</td><td>{co.source}</td></tr>
+          <tr><td style="color:var(--muted);font-weight:600">CT</td><td>{co.ct}</td></tr>
+          <tr><td style="color:var(--muted);font-weight:600">Reference standard</td><td>{co.reference_standard}</td></tr>
+          <tr><td style="color:var(--muted);font-weight:600">Analysis unit</td><td>{co.analysis_unit}</td></tr>
+        </table>
+        {co.reference && <p class="muted" style="font-size:.85rem;margin-top:10px">{co.reference}{co.doi && <> <a href={`https://doi.org/${co.doi}`}>doi:{co.doi}</a></>}</p>}
+      </div>
+    </section>
+    <section>
+      <h2 style="margin-top:0">Every model on the same test participants</h2>
+      <p class="muted">Comparators (colored) and each encoder in its own setup chosen in training data (open circles). The gray band is the range expected by chance; the dashed line marks 0.50.</p>
+      <Forest rows={rows} xmin={xmin} xmax={xmax} band={t.chance[0] != null ? [t.chance[0], t.chance[1]] : null} xlabel={`${t.metric} (95% CI)`} />
+    </section>
+  </div>
+</Base>

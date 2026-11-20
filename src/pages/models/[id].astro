@@ -1,0 +1,63 @@
+---
+import Base from "../../layouts/Base.astro";
+import Forest from "../../components/Forest.astro";
+import models from "../../data/models.json";
+import tasks from "../../data/tasks.json";
+import cells from "../../data/task_models.json";
+
+export function getStaticPaths() {
+  return models.map((m) => ({ params: { id: m.id }, props: { m } }));
+}
+const { m } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const mine = tasks.map((t) => ({ t, c: cells.find((c) => c.task === t.id && c.model === m.name) }));
+const rows = mine.map(({ t, c }, i) => ({
+  label: `${t.cohort} · ${({ "Malignancy (screening)": "malignancy", "Radiologist suspicion label": "suspicion", "Malignancy (pathology cohort)": "malignancy", "T3–4 vs T1–2 (T stage)": "T stage", "N+ vs N0 (N stage)": "N stage", "Squamous vs adenocarcinoma": "squamous", "EGFR mutation": "EGFR", "KRAS mutation": "KRAS", "Overall survival": "survival" } as Record<string, string>)[t.task] ?? t.task}`,
+  est: c && !c.excluded ? c.auc[0] : null, lo: c && !c.excluded ? c.auc[1] : null, hi: c && !c.excluded ? c.auc[2] : null,
+  sub: c?.excluded ? "excluded: pretraining overlap" : c?.best_comparator ? `· best comparator ${c.best_comparator_auc.toFixed(2)}` : "",
+  color: c && c.vs && c.vs.best[1] > 0 ? "#106ab1" : c && c.vs && c.vs.best[2] < 0 ? "#ab0520" : "#0c234b",
+  sep: i > 0 && tasks[i - 1].group !== t.group,
+}));
+const f3 = (x: number) => (x > 0 ? "+" : "") + x.toFixed(3).replace("-", "−");
+const ci3 = (a: number[]) => `${f3(a[0])} (${a[1].toFixed(3).replace("-", "−")}, ${a[2].toFixed(3).replace("-", "−")})`;
+const facts = [
+  ["Family", m.family], ["Pretraining approach", m.pretraining_class], ["Architecture", m.architecture],
+  ["Input used here", m.input], ["Default feature form", m.default_feature_form], ["Feature dimension", m.feature_dimension],
+  ["Pretraining data", m.pretraining_data], ["Pretraining scale", m.pretraining_scale], ["Objective", m.objective],
+  ["Weights", m.weights], ["Overlap with study cohorts", m.overlap],
+];
+---
+<Base title={m.name} active="/models" description={`${m.name}: performance of a frozen CT foundation model across 16 lung cancer tasks.`}>
+  <div class="page-head"><div class="wrap">
+    <p style="margin-bottom:6px"><a href={`${base}/models/`}>← All models</a></p>
+    <h1>{m.name}</h1>
+    <p>{m.family} · {m.pretraining_class}{m.lung_cancer_labels ? " · trained with lung cancer labels" : ""}</p>
+  </div></div>
+  <div class="wrap">
+    <section class="two">
+      <div>
+        <h2 style="margin-top:0">At a glance</h2>
+        <table class="tbl">
+          {facts.map(([k, v]) => <tr><td style="width:38%;color:var(--muted);font-weight:600">{k}</td><td>{v}</td></tr>)}
+        </table>
+        {m.reference && <p class="muted" style="font-size:.85rem;margin-top:12px">Source: {m.reference}{m.doi && <> <a href={`https://doi.org/${m.doi}`}>doi:{m.doi}</a></>}</p>}
+      </div>
+      <div>
+        <h2 style="margin-top:0">Compared with a random-weight encoder</h2>
+        <p class="muted">Mean over tasks of this encoder's AUC (default setup) minus the AUC of a three-dimensional ResNet-50 with random, never-trained weights in the same pipeline; Holm adjustment over the 18 encoders (post hoc).</p>
+        {Object.entries(m.vs_random).map(([s, v]: [string, any]) => (
+          <div class="card" style="margin-bottom:10px">
+            <div class="kicker">{s} · {v.tasks} tasks</div>
+            <div style="font-size:1.35rem;font-weight:700;color:var(--az-blue);font-variant-numeric:tabular-nums">{ci3(v.diff)}</div>
+            <span class={`pill ${v.above ? "green" : ""}`}>{v.above ? "Above the random-weight encoder after Holm adjustment" : "Not above after Holm adjustment"} (Holm P {v.p_holm >= 0.995 ? ">.99" : v.p_holm.toFixed(2).replace(/^0/, "")})</span>
+          </div>
+        ))}
+      </div>
+    </section>
+    <section>
+      <h2 style="margin-top:0">AUC in every task</h2>
+      <p class="muted">Setup (feature form and classifier) chosen in the training data of each task, in the task's main setting. Blue: 95% CI of the difference from the best comparator above 0; red: below 0; dark: not distinguished. The gray dashed line marks 0.50.</p>
+      <Forest rows={rows} labelw={235} />
+    </section>
+  </div>
+</Base>

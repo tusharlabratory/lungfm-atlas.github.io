@@ -1,0 +1,144 @@
+---
+import Base from "../layouts/Base.astro";
+---
+<Base title="Explorer" active="/explorer" description="Interactive heat map of 18 CT foundation models across 16 lung cancer tasks.">
+  <div class="page-head"><div class="wrap">
+    <h1>Explorer</h1>
+    <p>Every foundation model in every task, each in its own setup chosen in training data (or in its prespecified default setup). Switch between AUC and the difference from a comparator; hover a cell for the 95% CI, click a name to open its page.</p>
+  </div></div>
+  <div class="wrap">
+    <div class="controls">
+      <label>Show
+        <select id="metric">
+          <option value="auc">AUC, setup chosen in training data</option>
+          <option value="default">AUC, default setup</option>
+          <option value="best">Difference from the best comparator</option>
+          <option value="diameter">Difference from diameter</option>
+          <option value="radiomics">Difference from radiomics</option>
+          <option value="brock">Difference from the Brock model</option>
+        </select>
+      </label>
+      <label>Task group
+        <select id="group"><option value="">All tasks</option></select>
+      </label>
+      <label>Sort models
+        <div class="seg" id="sort"><button data-v="family" class="on">By family</button><button data-v="mean">By mean</button></div>
+      </label>
+      <label>Values
+        <div class="seg" id="vals"><button data-v="on" class="on">Show</button><button data-v="off">Hide</button></div>
+      </label>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="scroll-x"><table class="heat" id="heat"></table></div>
+    <p class="note" id="explain" style="margin-top:14px"></p>
+  </div>
+</Base>
+
+<script>
+  import { getJSON, divColor, seqColor, inkFor, f2, f3s, ci2, ci3, tooltip, GROUPS, BASE, BLUES, REDS, NEUTRAL } from "../scripts/lib.js";
+  const tip = tooltip();
+  const [tasks, cells, models] = await Promise.all([getJSON("tasks.json"), getJSON("task_models.json"), getJSON("models.json")]);
+  const st = { metric: "auc", group: "", sort: "family", vals: true };
+  const gsel = document.getElementById("group");
+  GROUPS.forEach((g) => gsel.insertAdjacentHTML("beforeend", `<option>${g}</option>`));
+  const byKey = new Map(cells.map((c) => [`${c.task}|${c.model}`, c]));
+  const modelId = Object.fromEntries(models.map((m) => [m.name, m.id]));
+  const COMPS = ["Diameter", "Diameter-only logistic model", "Brock model", "Radiomics"];
+
+  function value(c) {
+    if (!c) return null;
+    if (st.metric === "auc") return c.auc;
+    if (st.metric === "default") return c.default ?? null;
+    return c.vs ? c.vs[st.metric] : null;
+  }
+  const isDelta = () => !["auc", "default"].includes(st.metric);
+
+  function render() {
+    const tk = tasks.filter((t) => !st.group || t.group === st.group);
+    let rows = models.map((m) => m.name);
+    if (st.sort === "mean") {
+      const mean = (n) => { const v = tk.map((t) => value(byKey.get(`${t.id}|${n}`))).filter((x) => x && x[0] != null).map((x) => x[0]);
+        return v.length ? v.reduce((a, b) => a + b, 0) / v.length : -9; };
+      rows.sort((a, b) => mean(b) - mean(a));
+    }
+    rows.push("Random-weight encoder");
+    const comps = isDelta() ? [] : COMPS;
+    const SHORT = { "Malignancy (screening)": "malignancy", "Radiologist suspicion label": "suspicion",
+      "Malignancy (pathology cohort)": "malignancy", "T3–4 vs T1–2 (T stage)": "T stage", "N+ vs N0 (N stage)": "N stage",
+      "Squamous vs adenocarcinoma": "squamous", "EGFR mutation": "EGFR", "KRAS mutation": "KRAS", "Overall survival": "survival" };
+    const GS = { "Screening malignancy": "Screening", "Radiologist suspicion": "Suspicion", "Pathology malignancy": "Pathology",
+      "Stage, subtype, mutation, survival": "Stage, subtype, mutation, survival" };
+    let h = "<thead><tr><th></th>";
+    const spans = [];
+    tk.forEach((t) => { if (spans.length && spans.at(-1)[0] === t.group) spans.at(-1)[1]++; else spans.push([t.group, 1]); });
+    tk.forEach((t) => { h += `<th class="col"><a href="${BASE}/tasks/${t.id}/">${t.cohort} ${SHORT[t.task] ?? t.task}</a></th>`; });
+    h += "</tr><tr><th></th>";
+    spans.forEach(([g, n]) => { h += `<th colspan="${n}" style="font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;border-top:2px solid var(--az-red);white-space:nowrap;padding-top:5px">${n >= 3 ? GS[g] : n === 2 ? GS[g].split(",")[0] : ""}</th>`; });
+    h += "</tr><tr><th></th>";
+    tk.forEach((t) => { h += `<th style="font-size:.7rem;color:#545f6b;font-weight:600">${t.main_setting === "External test" ? "ext" : "within"}</th>`; });
+    h += "</tr></thead><tbody>";
+    const all = [...rows, ...comps];
+    all.forEach((n, i) => {
+      const sep = i === rows.length - 1 || (comps.length && i === rows.length);
+      const link = modelId[n] ? `<a href="${BASE}/models/${modelId[n]}/">${n}</a>` : `<i>${n}</i>`;
+      h += `<tr class="${sep ? "sep" : ""}"><th class="row">${link}</th>`;
+      tk.forEach((t) => {
+        const c = byKey.get(`${t.id}|${n}`);
+        const v = value(c);
+        if (c && c.excluded) { h += `<td class="hatch" data-k="${t.id}|${n}"></td>`; return; }
+        if (!v || v[0] == null) { h += `<td class="na">–</td>`; return; }
+        const bg = isDelta() ? divColor(v[0]) : seqColor(v[0]);
+        const sig = isDelta() && v[1] != null && (v[1] > 0 || v[2] < 0);
+        const txt = st.vals ? (isDelta() ? f3s(v[0]).replace("0.", ".") : f2(v[0]).replace("0.", ".")) : "";
+        h += `<td class="${sig ? "sig" : ""}" style="background:${bg};color:${inkFor(bg)}" data-k="${t.id}|${n}">${txt}</td>`;
+      });
+      h += "</tr>";
+    });
+    document.getElementById("heat").innerHTML = h + "</tbody>";
+    // legend
+    const lg = document.getElementById("legend");
+    if (isDelta()) {
+      lg.innerHTML = `<span>Comparator higher</span><span class="ramp">${[...REDS].reverse().map((c) => `<i style="background:${c}"></i>`).join("")}<i style="background:${NEUTRAL}"></i>${BLUES.map((c) => `<i style="background:${c}"></i>`).join("")}</span><span>Foundation model higher</span>
+        <span style="margin-left:14px">bins ±0.02, 0.05, 0.10, 0.20, 0.30 · outlined = 95% CI excludes 0 · hatched = excluded for pretraining overlap</span>`;
+    } else {
+      lg.innerHTML = `<span>AUC</span><span class="ramp">${[0.45, 0.55, 0.65, 0.75, 0.85].map((v) => `<i style="background:${seqColor(v)}"></i>`).join("")}</span><span>0.45 → 0.90</span>
+        <span style="margin-left:14px">hatched = excluded for pretraining overlap · C index for survival</span>`;
+    }
+    const ex = {
+      auc: "Each encoder in the setup (feature form and classifier) with the highest cross-validated AUC in the training data; the test data were never used to choose. Comparator rows show nodule diameter, the diameter-only logistic model, the Brock model (screening cohorts) and radiomics on the same test participants.",
+      default: "Each encoder in its prespecified default setup: default feature form with L2-regularized logistic regression (penalized Cox model for survival).",
+      best: "Encoder AUC minus the AUC of the best comparator in the task (the comparator with the highest AUC, chosen with the test labels, which favors the comparator). Paired participant bootstrap, unadjusted 95% CIs; post hoc.",
+      diameter: "Encoder AUC minus the AUC of nodule diameter used directly as the score (nothing fitted). For subtype and mutation, diameter has no clinical direction.",
+      radiomics: "Encoder AUC minus the AUC of radiomics (107 PyRadiomics features with L2 logistic regression).",
+      brock: "Encoder AUC minus the AUC of the published Brock model (screening cohorts only).",
+    };
+    document.getElementById("explain").textContent = ex[st.metric];
+  }
+
+  document.getElementById("heat").addEventListener("mousemove", (ev) => {
+    const td = ev.target.closest("td[data-k]");
+    if (!td) return tip.hide();
+    const [tid, n] = td.dataset.k.split("|");
+    const c = byKey.get(td.dataset.k), t = tasks.find((x) => x.id === tid);
+    let html = `<b>${n}</b><br>${t.cohort} · ${t.task} (${t.main_setting.toLowerCase()})<br>`;
+    if (c.excluded) html += "Excluded: the cohort or its parent collection was in this model's pretraining data.";
+    else {
+      html += `AUC ${ci2(c.auc)}`;
+      if (c.default) html += `<br>Default setup ${ci2(c.default)}`;
+      if (c.vs && isDelta()) html += `<br>Difference ${ci3(c.vs[st.metric])}`;
+      if (c.best_comparator && c.kind !== "comparator") html += `<br><span style="opacity:.8">Best comparator: ${c.best_comparator} ${f2(c.best_comparator_auc)}</span>`;
+      if (c.setup) html += `<br><span style="opacity:.8">Setup: ${c.setup}</span>`;
+    }
+    tip.show(html, ev);
+  });
+  document.getElementById("heat").addEventListener("mouseleave", () => tip.hide());
+  document.getElementById("metric").onchange = (e) => { st.metric = e.target.value; render(); };
+  gsel.onchange = (e) => { st.group = e.target.value; render(); };
+  for (const id of ["sort", "vals"]) document.getElementById(id).addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    [...b.parentNode.children].forEach((x) => x.classList.toggle("on", x === b));
+    if (id === "sort") st.sort = b.dataset.v; else st.vals = b.dataset.v === "on";
+    render();
+  });
+  render();
+</script>

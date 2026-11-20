@@ -1,0 +1,137 @@
+---
+import Base from "../layouts/Base.astro";
+---
+<Base title="Model setups" active="/setups" description="Every encoder × feature form × classifier combination for each lung cancer task.">
+  <div class="page-head"><div class="wrap">
+    <h1>Model setups</h1>
+    <p>A model setup is one encoder, one feature form (how features are read out of the encoder) and one classifier. Each dot is one setup evaluated on the same test participants. The selected FM setup was chosen in the training data only; the best dot was found with the test labels and is optimistic.</p>
+  </div></div>
+  <div class="wrap">
+    <div class="controls">
+      <label>Task <select id="task"></select></label>
+      <label>Setting <select id="setting"></select></label>
+      <label>Color by
+        <div class="seg" id="colorby"><button data-v="classifier" class="on">Classifier</button><button data-v="feature_form">Feature form</button></div>
+      </label>
+      <label>Classifier <select id="fclf"><option value="">All</option></select></label>
+      <label>Feature form <select id="fform"><option value="">All</option></select></label>
+    </div>
+    <div id="summary" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:14px"></div>
+    <div class="scroll-x"><svg id="strip" width="100%"></svg></div>
+    <div class="legend" id="slegend"></div>
+    <h2>Highest-AUC setups in this task</h2>
+    <p class="muted">Ranked by test AUC, so this list is chosen with the test labels and overstates what a new cohort would show. Use it to see what tends to work, not as an estimate.</p>
+    <div class="scroll-x"><table class="tbl" id="top"></table></div>
+  </div>
+</Base>
+
+<script>
+  import { getJSON, f2, ci2, tooltip, BASE } from "../scripts/lib.js";
+  const tip = tooltip();
+  const [index, tasks] = await Promise.all([getJSON("setups_index.json"), getJSON("tasks.json")]);
+  const CLF_COL = {"L2 logistic regression": "#0C234B", "L1 logistic regression": "#1E5288", "Elastic-net logistic regression": "#3D6FA8",
+    "Shrinkage LDA": "#5F86B8", "Linear SVM": "#106AB1", "RBF SVM": "#5FB0DA", "Cosine kNN": "#81CEEB",
+    "Random forest": "#7F8B5A", "Extra trees": "#A3AD80", "LightGBM": "#C62840", "XGBoost": "#E08996",
+    "Neural network (MLP)": "#3F7A7A", "TabPFN": "#85372B",
+    "Patch mean and maximum pooling": "#AB0520", "Gated attention MIL": "#850000", "Attentive probe": "#D45E70", "Slice transformer": "#F2B8B5",
+    "Penalized Cox model": "#0C234B", "Random survival forest": "#7F8B5A", "Gradient-boosted Cox": "#C62840", "DeepSurv neural network": "#3F7A7A"};
+  const PAL = ["#0C234B", "#AB0520", "#106AB1", "#7F8B5A", "#81CEEB", "#C62840", "#3F7A7A", "#85372B", "#1E5288", "#E08996", "#A3AD80", "#5FB0DA", "#850000", "#5F86B8", "#D45E70", "#F2B8B5"];
+  const st = { task: null, setting: null, colorby: "classifier", fclf: "", fform: "", data: null };
+  const qs = new URLSearchParams(location.search);
+  const tsel = document.getElementById("task"), ssel = document.getElementById("setting");
+  tasks.forEach((t) => tsel.insertAdjacentHTML("beforeend", `<option value="${t.id}">${t.cohort} · ${t.task}</option>`));
+  st.task = qs.get("task") && tasks.some((t) => t.id === qs.get("task")) ? qs.get("task") : tasks[0].id;
+  tsel.value = st.task;
+
+  function settings() {
+    const opts = index.filter((x) => x.task === st.task).sort((a, b) => (a.setting === "External test" ? -1 : 1));
+    ssel.innerHTML = opts.map((o) => `<option>${o.setting}</option>`).join("");
+    if (!opts.some((o) => o.setting === st.setting)) st.setting = opts[0].setting;
+    ssel.value = st.setting;
+  }
+  async function load() {
+    settings();
+    const ix = index.find((x) => x.task === st.task && x.setting === st.setting);
+    const d = await getJSON(`setups/${ix.file}`);
+    st.data = d.rows.map((r) => ({ encoder: r[0], feature_form: r[1], classifier: r[2], auc: r[3], lo: r[4], hi: r[5] }));
+    st.ix = ix;
+    const fill = (id, key) => { const el = document.getElementById(id); const cur = el.value;
+      el.innerHTML = `<option value="">All</option>` + [...new Set(st.data.map((r) => r[key]))].sort().map((v) => `<option>${v}</option>`).join("");
+      el.value = [...el.options].some((o) => o.value === cur) ? cur : ""; st[id] = el.value; };
+    fill("fclf", "classifier"); fill("fform", "feature_form");
+    render();
+  }
+
+  function render() {
+    const t = tasks.find((x) => x.id === st.task), sm = st.ix.summary;
+    const rows = st.data.filter((r) => (!st.fclf || r.classifier === st.fclf) && (!st.fform || r.feature_form === st.fform));
+    const metric = t.metric;
+    const card = (k, v, s = "") => `<div class="card" style="padding:12px 14px"><div class="kicker">${k}</div><div style="font-size:1.15rem;font-weight:700;color:var(--az-blue);font-variant-numeric:tabular-nums">${v}</div><div class="muted" style="font-size:.8rem">${s}</div></div>`;
+    const sel = st.setting === t.main_setting ? ci2(t.selected) : "see task page";
+    document.getElementById("summary").innerHTML =
+      card("Model setups", `${st.ix.n}`, `${new Set(st.data.map((r) => r.encoder)).size} encoders`) +
+      card(`Median ${metric}`, ci2(sm.median), `IQR ${f2(sm.q1)}–${f2(sm.q3)}`) +
+      card("Selected FM setup", sel, "chosen in training data") +
+      card("Diameter", ci2(sm.diameter), "raw diameter as the score") +
+      card("Radiomics", ci2(sm.radiomics), "107 features, L2 logistic") +
+      card("Random-weight encoder", ci2(sm.random_weight), "no pretraining");
+    // strip plot: one row per encoder
+    const encs = [...new Set(st.data.map((r) => r.encoder))];
+    const med = (e) => { const v = st.data.filter((r) => r.encoder === e).map((r) => r.auc).sort((a, b) => a - b); return v[Math.floor(v.length / 2)]; };
+    encs.sort((a, b) => med(b) - med(a));
+    const W = 1100, L = 150, R = 30, top = 18, rh = 22, H = top + encs.length * rh + 40;
+    const lo = Math.min(...st.data.map((r) => r.auc), sm.chance?.[0] ?? 1, sm.diameter?.[0] ?? 1, sm.radiomics?.[0] ?? 1) - 0.02;
+    const hi = Math.max(...st.data.map((r) => r.auc), sm.diameter?.[0] ?? 0, sm.radiomics?.[0] ?? 0) + 0.02;
+    const xmin = Math.floor(lo * 20) / 20, xmax = Math.ceil(hi * 20) / 20;
+    const X = (v) => L + ((v - xmin) / (xmax - xmin)) * (W - L - R);
+    const cats = [...new Set(st.data.map((r) => r[st.colorby]))];
+    const col = (r) => st.colorby === "classifier" ? (CLF_COL[r.classifier] ?? "#888") : PAL[cats.indexOf(r.feature_form) % PAL.length];
+    let s = "";
+    if (sm.chance && sm.chance[0] != null) s += `<rect x="${X(sm.chance[0])}" y="${top}" width="${X(sm.chance[1]) - X(sm.chance[0])}" height="${encs.length * rh}" fill="#e9edf2"/>`;
+    for (let v = Math.ceil(xmin * 20) / 20; v <= xmax + 1e-9; v += 0.05) {
+      s += `<line x1="${X(v)}" x2="${X(v)}" y1="${top}" y2="${top + encs.length * rh}" stroke="#eef1f4"/>`;
+      s += `<text x="${X(v)}" y="${top + encs.length * rh + 16}" font-size="11.5" text-anchor="middle" font-weight="600">${v.toFixed(2)}</text>`;
+    }
+    const vline = (v, c, lab, dash) => v == null ? "" : `<line x1="${X(v)}" x2="${X(v)}" y1="${top - 6}" y2="${top + encs.length * rh}" stroke="${c}" stroke-width="2" ${dash ? 'stroke-dasharray="5 3"' : ""}><title>${lab}</title></line>`;
+    encs.forEach((e, i) => {
+      const y = top + i * rh + rh / 2;
+      s += `<text x="${L - 8}" y="${y + 4}" text-anchor="end" font-size="12">${e}</text>`;
+      if (i % 2) s += `<rect x="${L}" y="${top + i * rh}" width="${W - L - R}" height="${rh}" fill="#f8fafc" opacity=".6"/>`;
+    });
+    s += vline(sm.diameter?.[0], "#AB0520", "Diameter", false) + vline(sm.radiomics?.[0], "#7F8B5A", "Radiomics", false) +
+      vline(sm.random_weight?.[0], "#8C8C8C", "Random-weight", true);
+    if (st.setting === t.main_setting) s += vline(t.selected[0], "#0C234B", "Selected", true);
+    const shown = new Set(rows);
+    st.data.forEach((r, k) => {
+      const i = encs.indexOf(r.encoder), y = top + i * rh + rh / 2 + (((k * 7919) % 13) - 6) * 0.9;
+      const on = shown.has(r);
+      s += `<circle cx="${X(r.auc)}" cy="${y}" r="${on ? 3.6 : 2.4}" fill="${on ? col(r) : "#d0d5db"}" fill-opacity="${on ? 0.85 : 0.5}" data-k="${k}"/>`;
+    });
+    s += `<text x="${L + (W - L - R) / 2}" y="${H - 4}" font-size="12" text-anchor="middle" font-weight="700" fill="#0c234b">${metric} on the test participants</text>`;
+    const svg = document.getElementById("strip");
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.innerHTML = s;
+    document.getElementById("slegend").innerHTML = cats.slice(0, 22).map((c) =>
+      `<span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${st.colorby === "classifier" ? (CLF_COL[c] ?? "#888") : PAL[cats.indexOf(c) % PAL.length]}"></i> ${c}</span>`).join("") +
+      `<br><span style="width:100%"></span><span><i style="display:inline-block;width:18px;border-top:2px dashed #0C234B;vertical-align:middle"></i> Selected FM setup</span><span><i style="display:inline-block;width:18px;border-top:2px solid #AB0520;vertical-align:middle"></i> Diameter</span><span><i style="display:inline-block;width:18px;border-top:2px solid #7F8B5A;vertical-align:middle"></i> Radiomics</span><span><i style="display:inline-block;width:18px;border-top:2px dashed #8C8C8C;vertical-align:middle"></i> Random-weight encoder</span><span><i style="display:inline-block;width:18px;height:10px;background:#e9edf2;vertical-align:middle"></i> Range expected by chance</span>`;
+    const best = [...rows].sort((a, b) => b.auc - a.auc).slice(0, 15);
+    document.getElementById("top").innerHTML = `<thead><tr><th>#</th><th>Encoder</th><th>Feature form</th><th>Classifier</th><th>${metric} (95% CI)</th></tr></thead><tbody>` +
+      best.map((r, i) => `<tr><td>${i + 1}</td><td>${r.encoder}</td><td>${r.feature_form}</td><td>${r.classifier}</td><td class="num">${ci2([r.auc, r.lo, r.hi])}</td></tr>`).join("") + "</tbody>";
+  }
+
+  document.getElementById("strip").addEventListener("mousemove", (ev) => {
+    const c = ev.target.closest("circle"); if (!c) return tip.hide();
+    const r = st.data[+c.dataset.k];
+    tip.show(`<b>${r.encoder}</b><br>${r.feature_form}<br>${r.classifier}<br>${ci2([r.auc, r.lo, r.hi])}`, ev);
+  });
+  document.getElementById("strip").addEventListener("mouseleave", () => tip.hide());
+  tsel.onchange = (e) => { st.task = e.target.value; history.replaceState(null, "", `?task=${st.task}`); load(); };
+  ssel.onchange = (e) => { st.setting = e.target.value; load(); };
+  document.getElementById("fclf").onchange = (e) => { st.fclf = e.target.value; render(); };
+  document.getElementById("fform").onchange = (e) => { st.fform = e.target.value; render(); };
+  document.getElementById("colorby").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    [...b.parentNode.children].forEach((x) => x.classList.toggle("on", x === b)); st.colorby = b.dataset.v; render();
+  });
+  load();
+</script>

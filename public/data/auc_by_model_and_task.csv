@@ -1,0 +1,355 @@
+task,model,kind,setting,auc,auc_lo,auc_hi
+T1-DLCS24,Diameter,comparator,External test,0.7305,0.6924,0.7688
+T1-DLCS24,Diameter-only logistic model,comparator,External test,0.7305,0.6924,0.7688
+T1-DLCS24,Brock model,comparator,External test,0.7466,0.7097,0.7818
+T1-DLCS24,Radiomics,comparator,External test,0.7288,0.6886,0.77
+T1-DLCS24,Jolia,encoder,External test,0.7108,0.6744,0.7497
+T1-DLCS24,Pillar0-ChestCT,encoder,External test,0.7255,0.6876,0.7652
+T1-DLCS24,Pillar0-Sybil-1.5,encoder,External test,0.7383,0.6991,0.7779
+T1-DLCS24,CT-FM,encoder,External test,0.6303,0.5942,0.6703
+T1-DLCS24,Merlin,encoder,External test,0.6177,0.5816,0.6532
+T1-DLCS24,CT-CLIP,encoder,External test,0.5774,0.5404,0.6155
+T1-DLCS24,Models Genesis,encoder,External test,0.6743,0.6333,0.714
+T1-DLCS24,ResNet50-SWS,encoder,External test,,,
+T1-DLCS24,FMCIB,encoder,External test,0.6977,0.6582,0.7364
+T1-DLCS24,MedicalNet,encoder,External test,0.6627,0.6241,0.7005
+T1-DLCS24,DINOv3,encoder,External test,0.6682,0.6298,0.7056
+T1-DLCS24,MedDINOv3,encoder,External test,0.6573,0.6201,0.6949
+T1-DLCS24,MedSigLIP,encoder,External test,0.6906,0.6554,0.7265
+T1-DLCS24,Lingshu,encoder,External test,0.6798,0.6424,0.7172
+T1-DLCS24,BiomedCLIP,encoder,External test,0.6713,0.6341,0.7089
+T1-DLCS24,nnFoundation-CNN,encoder,External test,0.5833,0.545,0.6216
+T1-DLCS24,nnFoundation-ViT,encoder,External test,0.7324,0.6943,0.7711
+T1-DLCS24,Sybil,encoder,External test,0.7232,0.6866,0.762
+T1-DLCS24,Random-weight encoder,control,External test,0.582,0.5429,0.6208
+T1-LUNA25,Diameter,comparator,External test,0.8234,0.8007,0.8457
+T1-LUNA25,Diameter-only logistic model,comparator,External test,0.8234,0.8007,0.8457
+T1-LUNA25,Brock model,comparator,External test,0.8305,0.8053,0.8539
+T1-LUNA25,Radiomics,comparator,External test,0.8324,0.8104,0.8542
+T1-LUNA25,Jolia,encoder,External test,0.8182,0.7911,0.8449
+T1-LUNA25,Pillar0-ChestCT,encoder,External test,0.8238,0.7973,0.8487
+T1-LUNA25,Pillar0-Sybil-1.5,encoder,External test,,,
+T1-LUNA25,CT-FM,encoder,External test,0.6334,0.5969,0.6673
+T1-LUNA25,Merlin,encoder,External test,0.6369,0.6018,0.67
+T1-LUNA25,CT-CLIP,encoder,External test,0.5,0.5,0.5
+T1-LUNA25,Models Genesis,encoder,External test,0.7434,0.7146,0.7725
+T1-LUNA25,ResNet50-SWS,encoder,External test,0.826,0.8004,0.8501
+T1-LUNA25,FMCIB,encoder,External test,0.8089,0.7809,0.8345
+T1-LUNA25,MedicalNet,encoder,External test,0.734,0.7028,0.765
+T1-LUNA25,DINOv3,encoder,External test,0.7093,0.6786,0.7403
+T1-LUNA25,MedDINOv3,encoder,External test,0.7239,0.6929,0.7541
+T1-LUNA25,MedSigLIP,encoder,External test,0.7653,0.7344,0.7945
+T1-LUNA25,Lingshu,encoder,External test,0.7567,0.7273,0.7851
+T1-LUNA25,BiomedCLIP,encoder,External test,0.6454,0.6089,0.6807
+T1-LUNA25,nnFoundation-CNN,encoder,External test,0.6324,0.6017,0.6632
+T1-LUNA25,nnFoundation-ViT,encoder,External test,0.8487,0.8283,0.8677
+T1-LUNA25,Sybil,encoder,External test,,,
+T1-LUNA25,Random-weight encoder,control,External test,0.6399,0.6061,0.6716
+T2-LIDC,Diameter,comparator,External test,0.7264,0.6917,0.7603
+T2-LIDC,Diameter-only logistic model,comparator,External test,0.7264,0.6917,0.7603
+T2-LIDC,Radiomics,comparator,External test,0.8124,0.7804,0.8431
+T2-LIDC,Jolia,encoder,External test,0.711,0.6784,0.7431
+T2-LIDC,Pillar0-ChestCT,encoder,External test,0.7712,0.7413,0.8014
+T2-LIDC,Pillar0-Sybil-1.5,encoder,External test,0.7691,0.7397,0.7991
+T2-LIDC,CT-FM,encoder,External test,,,
+T2-LIDC,Merlin,encoder,External test,0.5122,0.4739,0.5505
+T2-LIDC,CT-CLIP,encoder,External test,0.4935,0.4568,0.5293
+T2-LIDC,Models Genesis,encoder,External test,,,
+T2-LIDC,ResNet50-SWS,encoder,External test,0.7539,0.7203,0.7866
+T2-LIDC,FMCIB,encoder,External test,0.5818,0.5449,0.6186
+T2-LIDC,MedicalNet,encoder,External test,0.4994,0.4616,0.5344
+T2-LIDC,DINOv3,encoder,External test,0.5607,0.5269,0.5964
+T2-LIDC,MedDINOv3,encoder,External test,0.6009,0.5665,0.6337
+T2-LIDC,MedSigLIP,encoder,External test,0.6341,0.5996,0.6687
+T2-LIDC,Lingshu,encoder,External test,0.4999,0.4601,0.5413
+T2-LIDC,BiomedCLIP,encoder,External test,0.5285,0.4885,0.5693
+T2-LIDC,nnFoundation-CNN,encoder,External test,0.5216,0.4843,0.5578
+T2-LIDC,nnFoundation-ViT,encoder,External test,0.7777,0.7464,0.8077
+T2-LIDC,Sybil,encoder,External test,0.6486,0.6105,0.684
+T2-LIDC,Random-weight encoder,control,External test,0.465,0.4283,0.5006
+T2-LNDb,Diameter,comparator,External test,0.7464,0.6992,0.7906
+T2-LNDb,Diameter-only logistic model,comparator,External test,0.7464,0.6992,0.7906
+T2-LNDb,Radiomics,comparator,External test,0.7646,0.7196,0.8065
+T2-LNDb,Jolia,encoder,External test,0.6533,0.6031,0.7015
+T2-LNDb,Pillar0-ChestCT,encoder,External test,0.6365,0.5832,0.6857
+T2-LNDb,Pillar0-Sybil-1.5,encoder,External test,0.6669,0.6091,0.72
+T2-LNDb,CT-FM,encoder,External test,0.5955,0.549,0.6414
+T2-LNDb,Merlin,encoder,External test,0.5114,0.4622,0.5572
+T2-LNDb,CT-CLIP,encoder,External test,0.4897,0.4475,0.5321
+T2-LNDb,Models Genesis,encoder,External test,0.6258,0.5745,0.676
+T2-LNDb,ResNet50-SWS,encoder,External test,0.6443,0.5937,0.6943
+T2-LNDb,FMCIB,encoder,External test,0.5626,0.5128,0.6104
+T2-LNDb,MedicalNet,encoder,External test,0.5267,0.4794,0.574
+T2-LNDb,DINOv3,encoder,External test,0.5684,0.5222,0.6165
+T2-LNDb,MedDINOv3,encoder,External test,0.5642,0.5147,0.6132
+T2-LNDb,MedSigLIP,encoder,External test,0.6135,0.5654,0.663
+T2-LNDb,Lingshu,encoder,External test,0.5586,0.5106,0.6025
+T2-LNDb,BiomedCLIP,encoder,External test,0.5546,0.511,0.5989
+T2-LNDb,nnFoundation-CNN,encoder,External test,0.5568,0.5097,0.6047
+T2-LNDb,nnFoundation-ViT,encoder,External test,0.6482,0.6014,0.6983
+T2-LNDb,Sybil,encoder,External test,0.5948,0.538,0.6473
+T2-LNDb,Random-weight encoder,control,External test,0.4704,0.4251,0.5142
+T3-LIDCpath,Diameter,comparator,External test,0.7337,0.5946,0.8526
+T3-LIDCpath,Diameter-only logistic model,comparator,External test,0.2663,0.1474,0.4054
+T3-LIDCpath,Radiomics,comparator,External test,0.5863,0.4376,0.7317
+T3-LIDCpath,Jolia,encoder,External test,0.5526,0.399,0.7005
+T3-LIDCpath,Pillar0-ChestCT,encoder,External test,0.5495,0.395,0.6948
+T3-LIDCpath,Pillar0-Sybil-1.5,encoder,External test,0.5663,0.4162,0.7111
+T3-LIDCpath,CT-FM,encoder,External test,,,
+T3-LIDCpath,Merlin,encoder,External test,0.4537,0.3083,0.6106
+T3-LIDCpath,CT-CLIP,encoder,External test,0.5579,0.4124,0.7018
+T3-LIDCpath,Models Genesis,encoder,External test,,,
+T3-LIDCpath,ResNet50-SWS,encoder,External test,0.5274,0.3836,0.6733
+T3-LIDCpath,FMCIB,encoder,External test,0.4653,0.314,0.6153
+T3-LIDCpath,MedicalNet,encoder,External test,0.3211,0.1949,0.4643
+T3-LIDCpath,DINOv3,encoder,External test,0.3484,0.2202,0.4865
+T3-LIDCpath,MedDINOv3,encoder,External test,0.46,0.3087,0.604
+T3-LIDCpath,MedSigLIP,encoder,External test,0.6074,0.4434,0.7455
+T3-LIDCpath,Lingshu,encoder,External test,0.4768,0.3311,0.625
+T3-LIDCpath,BiomedCLIP,encoder,External test,0.5295,0.3785,0.6713
+T3-LIDCpath,nnFoundation-CNN,encoder,External test,0.6011,0.4464,0.7432
+T3-LIDCpath,nnFoundation-ViT,encoder,External test,0.5737,0.4075,0.7159
+T3-LIDCpath,Sybil,encoder,External test,0.5274,0.3715,0.6811
+T3-LIDCpath,Random-weight encoder,control,External test,0.4821,0.336,0.6352
+T3-HISTO2,Diameter,comparator,External test,0.4777,0.3395,0.6229
+T3-HISTO2,Diameter-only logistic model,comparator,External test,0.5223,0.3771,0.6605
+T3-HISTO2,Radiomics,comparator,External test,0.5105,0.3874,0.6322
+T3-HISTO2,Jolia,encoder,External test,0.577,0.4353,0.7172
+T3-HISTO2,Pillar0-ChestCT,encoder,External test,0.5711,0.4409,0.6955
+T3-HISTO2,Pillar0-Sybil-1.5,encoder,External test,0.5904,0.4622,0.7119
+T3-HISTO2,CT-FM,encoder,External test,0.5491,0.4111,0.6901
+T3-HISTO2,Merlin,encoder,External test,0.4079,0.2752,0.5455
+T3-HISTO2,CT-CLIP,encoder,External test,0.5035,0.3862,0.6276
+T3-HISTO2,Models Genesis,encoder,External test,0.4756,0.3552,0.5893
+T3-HISTO2,ResNet50-SWS,encoder,External test,0.4976,0.3588,0.6374
+T3-HISTO2,FMCIB,encoder,External test,0.5556,0.4334,0.6817
+T3-HISTO2,MedicalNet,encoder,External test,0.5518,0.4182,0.6844
+T3-HISTO2,DINOv3,encoder,External test,0.577,0.4417,0.707
+T3-HISTO2,MedDINOv3,encoder,External test,0.4954,0.3749,0.6116
+T3-HISTO2,MedSigLIP,encoder,External test,0.5046,0.3778,0.6314
+T3-HISTO2,Lingshu,encoder,External test,0.5545,0.4225,0.6874
+T3-HISTO2,BiomedCLIP,encoder,External test,0.6205,0.4991,0.7301
+T3-HISTO2,nnFoundation-CNN,encoder,External test,0.525,0.3949,0.6574
+T3-HISTO2,nnFoundation-ViT,encoder,External test,0.5593,0.4135,0.7036
+T3-HISTO2,Sybil,encoder,External test,0.6275,0.4983,0.7573
+T3-HISTO2,Random-weight encoder,control,External test,0.54,0.4142,0.6594
+T3-CSTLN2,Diameter,comparator,External test,0.6521,0.5084,0.769
+T3-CSTLN2,Diameter-only logistic model,comparator,External test,0.3479,0.231,0.4916
+T3-CSTLN2,Radiomics,comparator,External test,0.621,0.481,0.7753
+T3-CSTLN2,Jolia,encoder,External test,0.6338,0.5426,0.7272
+T3-CSTLN2,Pillar0-ChestCT,encoder,External test,0.756,0.6649,0.8383
+T3-CSTLN2,Pillar0-Sybil-1.5,encoder,External test,0.7446,0.6494,0.83
+T3-CSTLN2,CT-FM,encoder,External test,0.5338,0.4301,0.6402
+T3-CSTLN2,Merlin,encoder,External test,0.5117,0.4139,0.614
+T3-CSTLN2,CT-CLIP,encoder,External test,0.4538,0.3508,0.5674
+T3-CSTLN2,Models Genesis,encoder,External test,0.5953,0.4961,0.688
+T3-CSTLN2,ResNet50-SWS,encoder,External test,0.7228,0.5998,0.8256
+T3-CSTLN2,FMCIB,encoder,External test,0.5506,0.4331,0.6649
+T3-CSTLN2,MedicalNet,encoder,External test,0.6123,0.4977,0.7211
+T3-CSTLN2,DINOv3,encoder,External test,0.6181,0.5237,0.7052
+T3-CSTLN2,MedDINOv3,encoder,External test,0.6004,0.4898,0.7049
+T3-CSTLN2,MedSigLIP,encoder,External test,0.6581,0.525,0.7679
+T3-CSTLN2,Lingshu,encoder,External test,0.6949,0.6019,0.7763
+T3-CSTLN2,BiomedCLIP,encoder,External test,0.5502,0.4443,0.6586
+T3-CSTLN2,nnFoundation-CNN,encoder,External test,0.6051,0.5075,0.6998
+T3-CSTLN2,nnFoundation-ViT,encoder,External test,0.7494,0.6324,0.849
+T3-CSTLN2,Sybil,encoder,External test,0.6301,0.5336,0.7292
+T3-CSTLN2,Random-weight encoder,control,External test,0.4832,0.3807,0.5792
+T3-IMDCT,Diameter,comparator,External test,0.4643,0.4326,0.4967
+T3-IMDCT,Diameter-only logistic model,comparator,External test,0.4643,0.4326,0.4967
+T3-IMDCT,Radiomics,comparator,External test,0.578,0.5442,0.6107
+T3-IMDCT,Jolia,encoder,External test,0.5471,0.5156,0.5778
+T3-IMDCT,Pillar0-ChestCT,encoder,External test,0.7292,0.7034,0.7537
+T3-IMDCT,Pillar0-Sybil-1.5,encoder,External test,0.729,0.7027,0.7534
+T3-IMDCT,CT-FM,encoder,External test,0.5026,0.4713,0.5364
+T3-IMDCT,Merlin,encoder,External test,0.5071,0.4786,0.5398
+T3-IMDCT,CT-CLIP,encoder,External test,0.5147,0.4845,0.5448
+T3-IMDCT,Models Genesis,encoder,External test,0.5612,0.5302,0.5931
+T3-IMDCT,ResNet50-SWS,encoder,External test,0.5647,0.5338,0.5957
+T3-IMDCT,FMCIB,encoder,External test,0.5204,0.4892,0.5536
+T3-IMDCT,MedicalNet,encoder,External test,0.5213,0.4888,0.5539
+T3-IMDCT,DINOv3,encoder,External test,0.5009,0.4692,0.5358
+T3-IMDCT,MedDINOv3,encoder,External test,0.5279,0.4953,0.5589
+T3-IMDCT,MedSigLIP,encoder,External test,0.527,0.4956,0.5596
+T3-IMDCT,Lingshu,encoder,External test,0.546,0.5162,0.5756
+T3-IMDCT,BiomedCLIP,encoder,External test,0.5475,0.518,0.582
+T3-IMDCT,nnFoundation-CNN,encoder,External test,0.532,0.5001,0.5668
+T3-IMDCT,nnFoundation-ViT,encoder,External test,0.5449,0.514,0.5748
+T3-IMDCT,Sybil,encoder,External test,0.5746,0.5449,0.6069
+T3-IMDCT,Random-weight encoder,control,External test,0.5184,0.4872,0.5498
+T3-LUNGx,Diameter,comparator,External test,0.6667,0.5383,0.785
+T3-LUNGx,Diameter-only logistic model,comparator,External test,0.3333,0.215,0.4617
+T3-LUNGx,Radiomics,comparator,External test,0.5545,0.4243,0.6788
+T3-LUNGx,Jolia,encoder,External test,0.5449,0.4043,0.6781
+T3-LUNGx,Pillar0-ChestCT,encoder,External test,0.5667,0.4342,0.6908
+T3-LUNGx,Pillar0-Sybil-1.5,encoder,External test,0.5583,0.4265,0.6852
+T3-LUNGx,CT-FM,encoder,External test,0.5083,0.3635,0.6394
+T3-LUNGx,Merlin,encoder,External test,0.5083,0.369,0.6447
+T3-LUNGx,CT-CLIP,encoder,External test,0.5058,0.3953,0.6181
+T3-LUNGx,Models Genesis,encoder,External test,0.3724,0.2426,0.5115
+T3-LUNGx,ResNet50-SWS,encoder,External test,0.5301,0.3902,0.6596
+T3-LUNGx,FMCIB,encoder,External test,0.5224,0.3897,0.6499
+T3-LUNGx,MedicalNet,encoder,External test,0.4801,0.3538,0.611
+T3-LUNGx,DINOv3,encoder,External test,0.4917,0.3615,0.626
+T3-LUNGx,MedDINOv3,encoder,External test,0.4378,0.297,0.5774
+T3-LUNGx,MedSigLIP,encoder,External test,0.509,0.3803,0.6421
+T3-LUNGx,Lingshu,encoder,External test,0.5462,0.4076,0.669
+T3-LUNGx,BiomedCLIP,encoder,External test,0.4359,0.3027,0.5597
+T3-LUNGx,nnFoundation-CNN,encoder,External test,0.409,0.2931,0.5261
+T3-LUNGx,nnFoundation-ViT,encoder,External test,0.5417,0.4065,0.6812
+T3-LUNGx,Sybil,encoder,External test,0.5686,0.4286,0.6957
+T3-LUNGx,Random-weight encoder,control,External test,0.5878,0.4699,0.7132
+T5-NSCLCR,Diameter,comparator,Within,0.7164,0.6674,0.7646
+T5-NSCLCR,Diameter-only logistic model,comparator,Within,0.713,0.664,0.7615
+T5-NSCLCR,Radiomics,comparator,Within,0.7329,0.6849,0.7797
+T5-NSCLCR,Jolia,encoder,Within,0.7468,0.6996,0.7933
+T5-NSCLCR,Pillar0-ChestCT,encoder,Within,0.7495,0.7031,0.795
+T5-NSCLCR,Pillar0-Sybil-1.5,encoder,Within,0.748,0.7024,0.793
+T5-NSCLCR,CT-FM,encoder,Within,0.7048,0.6564,0.7519
+T5-NSCLCR,Merlin,encoder,Within,0.7106,0.6645,0.7573
+T5-NSCLCR,CT-CLIP,encoder,Within,0.7291,0.6826,0.7746
+T5-NSCLCR,Models Genesis,encoder,Within,0.6821,0.637,0.7257
+T5-NSCLCR,ResNet50-SWS,encoder,Within,0.7001,0.6549,0.7427
+T5-NSCLCR,FMCIB,encoder,Within,0.7483,0.7035,0.7906
+T5-NSCLCR,MedicalNet,encoder,Within,0.7112,0.6651,0.7589
+T5-NSCLCR,DINOv3,encoder,Within,0.7387,0.6939,0.7824
+T5-NSCLCR,MedDINOv3,encoder,Within,0.7348,0.6874,0.7795
+T5-NSCLCR,MedSigLIP,encoder,Within,0.749,0.7057,0.7931
+T5-NSCLCR,Lingshu,encoder,Within,0.6987,0.6521,0.7435
+T5-NSCLCR,BiomedCLIP,encoder,Within,0.7622,0.7161,0.8053
+T5-NSCLCR,nnFoundation-CNN,encoder,Within,0.6811,0.6352,0.7265
+T5-NSCLCR,nnFoundation-ViT,encoder,Within,0.7463,0.7029,0.7889
+T5-NSCLCR,Sybil,encoder,Within,0.7181,0.6733,0.7633
+T5-NSCLCR,Random-weight encoder,control,Within,0.6922,0.6436,0.7393
+T6-NSCLCR,Diameter,comparator,Within,0.5437,0.4828,0.5997
+T6-NSCLCR,Diameter-only logistic model,comparator,Within,0.5381,0.4784,0.5932
+T6-NSCLCR,Radiomics,comparator,Within,0.576,0.524,0.6246
+T6-NSCLCR,Jolia,encoder,Within,0.5747,0.5295,0.6209
+T6-NSCLCR,Pillar0-ChestCT,encoder,Within,0.638,0.5957,0.6825
+T6-NSCLCR,Pillar0-Sybil-1.5,encoder,Within,0.6396,0.5969,0.6823
+T6-NSCLCR,CT-FM,encoder,Within,0.5269,0.4882,0.5663
+T6-NSCLCR,Merlin,encoder,Within,0.5256,0.4864,0.5648
+T6-NSCLCR,CT-CLIP,encoder,Within,0.5333,0.4944,0.5744
+T6-NSCLCR,Models Genesis,encoder,Within,0.4942,0.4596,0.5308
+T6-NSCLCR,ResNet50-SWS,encoder,Within,0.5736,0.5253,0.6198
+T6-NSCLCR,FMCIB,encoder,Within,0.5097,0.4663,0.5514
+T6-NSCLCR,MedicalNet,encoder,Within,0.5155,0.4768,0.5539
+T6-NSCLCR,DINOv3,encoder,Within,0.5747,0.5323,0.6192
+T6-NSCLCR,MedDINOv3,encoder,Within,0.5678,0.5248,0.6117
+T6-NSCLCR,MedSigLIP,encoder,Within,0.5674,0.5217,0.6126
+T6-NSCLCR,Lingshu,encoder,Within,0.5367,0.4965,0.5752
+T6-NSCLCR,BiomedCLIP,encoder,Within,0.5197,0.4756,0.5644
+T6-NSCLCR,nnFoundation-CNN,encoder,Within,0.4888,0.4522,0.524
+T6-NSCLCR,nnFoundation-ViT,encoder,Within,0.6272,0.5794,0.6733
+T6-NSCLCR,Sybil,encoder,Within,0.5691,0.5242,0.613
+T6-NSCLCR,Random-weight encoder,control,Within,0.5103,0.4724,0.5459
+T8-NSCLCR,Diameter,comparator,External test,0.5179,0.4189,0.6196
+T8-NSCLCR,Diameter-only logistic model,comparator,External test,0.4821,0.3804,0.5811
+T8-NSCLCR,Radiomics,comparator,External test,0.4483,0.3576,0.5434
+T8-NSCLCR,Jolia,encoder,External test,0.5046,0.4185,0.5943
+T8-NSCLCR,Pillar0-ChestCT,encoder,External test,0.5939,0.506,0.6849
+T8-NSCLCR,Pillar0-Sybil-1.5,encoder,External test,0.5957,0.5079,0.6854
+T8-NSCLCR,CT-FM,encoder,External test,0.5067,0.4164,0.5976
+T8-NSCLCR,Merlin,encoder,External test,0.4981,0.4052,0.5922
+T8-NSCLCR,CT-CLIP,encoder,External test,0.5491,0.4558,0.6442
+T8-NSCLCR,Models Genesis,encoder,External test,0.5547,0.4593,0.647
+T8-NSCLCR,ResNet50-SWS,encoder,External test,0.4936,0.3986,0.5891
+T8-NSCLCR,FMCIB,encoder,External test,0.5462,0.4583,0.6341
+T8-NSCLCR,MedicalNet,encoder,External test,0.414,0.3293,0.5028
+T8-NSCLCR,DINOv3,encoder,External test,0.5268,0.4352,0.6165
+T8-NSCLCR,MedDINOv3,encoder,External test,0.545,0.4506,0.6374
+T8-NSCLCR,MedSigLIP,encoder,External test,0.5386,0.4446,0.6359
+T8-NSCLCR,Lingshu,encoder,External test,0.5118,0.4216,0.6097
+T8-NSCLCR,BiomedCLIP,encoder,External test,0.5636,0.473,0.654
+T8-NSCLCR,nnFoundation-CNN,encoder,External test,0.5453,0.4462,0.643
+T8-NSCLCR,nnFoundation-ViT,encoder,External test,0.6131,0.5248,0.6992
+T8-NSCLCR,Sybil,encoder,External test,0.5516,0.4591,0.6435
+T8-NSCLCR,Random-weight encoder,control,External test,0.4652,0.3812,0.5537
+T8-LungPETDx,Diameter,comparator,External test,0.326,0.1877,0.4901
+T8-LungPETDx,Diameter-only logistic model,comparator,External test,0.326,0.1877,0.4901
+T8-LungPETDx,Radiomics,comparator,External test,0.3444,0.2087,0.4858
+T8-LungPETDx,Jolia,encoder,External test,0.6117,0.4675,0.7442
+T8-LungPETDx,Pillar0-ChestCT,encoder,External test,0.6509,0.4621,0.8054
+T8-LungPETDx,Pillar0-Sybil-1.5,encoder,External test,0.6667,0.4878,0.8112
+T8-LungPETDx,CT-FM,encoder,External test,0.6573,0.5194,0.7849
+T8-LungPETDx,Merlin,encoder,External test,0.5912,0.4501,0.7258
+T8-LungPETDx,CT-CLIP,encoder,External test,0.4725,0.2994,0.6325
+T8-LungPETDx,Models Genesis,encoder,External test,0.5368,0.3641,0.7054
+T8-LungPETDx,ResNet50-SWS,encoder,External test,0.5094,0.3651,0.646
+T8-LungPETDx,FMCIB,encoder,External test,0.548,0.3613,0.734
+T8-LungPETDx,MedicalNet,encoder,External test,0.6082,0.4422,0.748
+T8-LungPETDx,DINOv3,encoder,External test,0.5263,0.3372,0.7065
+T8-LungPETDx,MedDINOv3,encoder,External test,0.5965,0.4187,0.7531
+T8-LungPETDx,MedSigLIP,encoder,External test,0.4912,0.3253,0.6593
+T8-LungPETDx,Lingshu,encoder,External test,0.5813,0.3976,0.7451
+T8-LungPETDx,BiomedCLIP,encoder,External test,0.5567,0.3792,0.7165
+T8-LungPETDx,nnFoundation-CNN,encoder,External test,0.4643,0.305,0.6376
+T8-LungPETDx,nnFoundation-ViT,encoder,External test,0.5901,0.4333,0.7453
+T8-LungPETDx,Sybil,encoder,External test,0.7368,0.5889,0.8471
+T8-LungPETDx,Random-weight encoder,control,External test,0.5205,0.3649,0.68
+T9-NSCLCRG,Diameter,comparator,Within,0.5643,0.4502,0.6717
+T9-NSCLCRG,Diameter-only logistic model,comparator,Within,0.5197,0.4122,0.6212
+T9-NSCLCRG,Radiomics,comparator,Within,0.5605,0.4507,0.6631
+T9-NSCLCRG,Jolia,encoder,Within,0.559,0.4675,0.6514
+T9-NSCLCRG,Pillar0-ChestCT,encoder,Within,0.5978,0.4965,0.6908
+T9-NSCLCRG,Pillar0-Sybil-1.5,encoder,Within,0.5427,0.437,0.6436
+T9-NSCLCRG,CT-FM,encoder,Within,0.5551,0.4819,0.6283
+T9-NSCLCRG,Merlin,encoder,Within,0.618,0.5295,0.7004
+T9-NSCLCRG,CT-CLIP,encoder,Within,0.5122,0.417,0.6011
+T9-NSCLCRG,Models Genesis,encoder,Within,0.5347,0.4223,0.6418
+T9-NSCLCRG,ResNet50-SWS,encoder,Within,0.4714,0.3844,0.549
+T9-NSCLCRG,FMCIB,encoder,Within,0.5025,0.4224,0.5827
+T9-NSCLCRG,MedicalNet,encoder,Within,0.5044,0.4094,0.5915
+T9-NSCLCRG,DINOv3,encoder,Within,0.54,0.451,0.6298
+T9-NSCLCRG,MedDINOv3,encoder,Within,0.5563,0.4507,0.6617
+T9-NSCLCRG,MedSigLIP,encoder,Within,0.5065,0.4281,0.5879
+T9-NSCLCRG,Lingshu,encoder,Within,0.6205,0.5198,0.7099
+T9-NSCLCRG,BiomedCLIP,encoder,Within,0.4984,0.4041,0.5958
+T9-NSCLCRG,nnFoundation-CNN,encoder,Within,0.4786,0.4132,0.5469
+T9-NSCLCRG,nnFoundation-ViT,encoder,Within,0.5139,0.4256,0.6013
+T9-NSCLCRG,Sybil,encoder,Within,0.6322,0.5426,0.7141
+T9-NSCLCRG,Random-weight encoder,control,Within,0.4734,0.3973,0.5482
+T10-NSCLCRG,Diameter,comparator,Within,0.4693,0.3422,0.5956
+T10-NSCLCRG,Diameter-only logistic model,comparator,Within,0.4779,0.3707,0.5863
+T10-NSCLCRG,Radiomics,comparator,Within,0.4944,0.4018,0.5849
+T10-NSCLCRG,Jolia,encoder,Within,0.4972,0.3916,0.5948
+T10-NSCLCRG,Pillar0-ChestCT,encoder,Within,0.4801,0.3895,0.5634
+T10-NSCLCRG,Pillar0-Sybil-1.5,encoder,Within,0.5363,0.4699,0.6061
+T10-NSCLCRG,CT-FM,encoder,Within,0.4916,0.4096,0.5757
+T10-NSCLCRG,Merlin,encoder,Within,0.5349,0.4526,0.6226
+T10-NSCLCRG,CT-CLIP,encoder,Within,0.5408,0.4651,0.6164
+T10-NSCLCRG,Models Genesis,encoder,Within,0.5311,0.4521,0.6087
+T10-NSCLCRG,ResNet50-SWS,encoder,Within,0.5265,0.4567,0.5939
+T10-NSCLCRG,FMCIB,encoder,Within,0.5549,0.466,0.639
+T10-NSCLCRG,MedicalNet,encoder,Within,0.5002,0.4159,0.5834
+T10-NSCLCRG,DINOv3,encoder,Within,0.4454,0.3745,0.5152
+T10-NSCLCRG,MedDINOv3,encoder,Within,0.5004,0.4224,0.5796
+T10-NSCLCRG,MedSigLIP,encoder,Within,0.4106,0.3297,0.4907
+T10-NSCLCRG,Lingshu,encoder,Within,0.4291,0.3561,0.5015
+T10-NSCLCRG,BiomedCLIP,encoder,Within,0.5426,0.4607,0.628
+T10-NSCLCRG,nnFoundation-CNN,encoder,Within,0.4879,0.3905,0.585
+T10-NSCLCRG,nnFoundation-ViT,encoder,Within,0.4909,0.409,0.5693
+T10-NSCLCRG,Sybil,encoder,Within,0.5005,0.4263,0.574
+T10-NSCLCRG,Random-weight encoder,control,Within,0.4999,0.4047,0.5933
+T11-NSCLCR,Diameter,comparator,Within,0.5863,0.5535,0.6177
+T11-NSCLCR,Diameter-only logistic model,comparator,Within,0.5527,0.5244,0.5795
+T11-NSCLCR,Radiomics,comparator,Within,0.5654,0.5361,0.5957
+T11-NSCLCR,Jolia,encoder,Within,0.5288,0.5053,0.5514
+T11-NSCLCR,Pillar0-ChestCT,encoder,Within,0.5458,0.5221,0.5694
+T11-NSCLCR,Pillar0-Sybil-1.5,encoder,Within,0.5395,0.5124,0.5653
+T11-NSCLCR,CT-FM,encoder,Within,0.5665,0.5361,0.596
+T11-NSCLCR,Merlin,encoder,Within,0.542,0.5153,0.5672
+T11-NSCLCR,CT-CLIP,encoder,Within,0.515,0.4922,0.5376
+T11-NSCLCR,Models Genesis,encoder,Within,0.5288,0.5016,0.5549
+T11-NSCLCR,ResNet50-SWS,encoder,Within,0.5224,0.4997,0.5432
+T11-NSCLCR,FMCIB,encoder,Within,0.532,0.5092,0.5542
+T11-NSCLCR,MedicalNet,encoder,Within,0.5367,0.5143,0.5576
+T11-NSCLCR,DINOv3,encoder,Within,0.5751,0.5482,0.6018
+T11-NSCLCR,MedDINOv3,encoder,Within,0.5277,0.5073,0.5471
+T11-NSCLCR,MedSigLIP,encoder,Within,0.5365,0.5102,0.5622
+T11-NSCLCR,Lingshu,encoder,Within,0.5377,0.5132,0.5613
+T11-NSCLCR,BiomedCLIP,encoder,Within,0.5248,0.5038,0.5465
+T11-NSCLCR,nnFoundation-CNN,encoder,Within,0.5437,0.5176,0.5697
+T11-NSCLCR,nnFoundation-ViT,encoder,Within,0.5555,0.5295,0.5808
+T11-NSCLCR,Sybil,encoder,Within,0.5888,0.5607,0.6143
+T11-NSCLCR,Random-weight encoder,control,Within,0.5499,0.5262,0.5739

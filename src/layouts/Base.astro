@@ -1,0 +1,61 @@
+---
+import "../styles/global.css";
+interface Props { title: string; description?: string; active?: string }
+const { title, description = "An open benchmark of 18 public CT foundation models across 16 lung cancer prediction tasks in 12 public cohorts.", active = "" } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const nav = [
+  ["Explorer", "/explorer"], ["Models", "/models"], ["Tasks", "/tasks"], ["Model setups", "/setups"],
+  ["Which model?", "/guide"], ["About", "/about"],
+];
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title === "LungFM Atlas" ? title : `${title} · LungFM Atlas`}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href={`${base}/`}><span class="mark">FM</span>LungFM Atlas</a>
+      <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
+      <nav class="nav">
+        {nav.map(([label, href]) => <a href={`${base}${href}/`} class={active === href ? "active" : ""}>{label}</a>)}
+      </nav>
+    </div>
+  </header>
+  <main>
+    <slot />
+  </main>
+  <footer class="site-footer">
+    <div class="wrap cols">
+      <div>
+        <b style="color:#fff;font-family:var(--font-head)">LungFM Atlas</b>
+        <p style="margin-top:6px">Results of a multicohort benchmark of frozen CT foundation models for lung cancer prediction. All numbers are aggregated study results with 95% confidence intervals; no participant-level data are shown.</p>
+      </div>
+      <div>
+        <b style="color:#fff">Explore</b><br />
+        <a href={`${base}/explorer/`}>Explorer</a><br />
+        <a href={`${base}/models/`}>Models</a><br />
+        <a href={`${base}/tasks/`}>Tasks and cohorts</a><br />
+        <a href={`${base}/guide/`}>Which model?</a>
+      </div>
+      <div>
+        <b style="color:#fff">Lab</b><br />
+        <a href="https://tusharlabratory.github.io/">Tushar Lab</a><br />
+        <a href="https://radiology.arizona.edu/">Department of Medical Imaging, University of Arizona</a><br />
+        <a href={`${base}/about/`}>About, citation and data</a>
+      </div>
+    </div>
+  </footer>
+  <div class="tip" id="tip"></div>
+</body>
+</html>

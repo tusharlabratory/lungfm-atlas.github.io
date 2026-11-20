@@ -1,0 +1,68 @@
+---
+import Base from "../layouts/Base.astro";
+import guidance from "../data/guidance.json";
+const md = (s: string) => s.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\*(.+?)\*/g, "<i>$1</i>").replace(/†/g, "<sup>†</sup>")
+  .replace(/\s*\[(\d+)\]/g, "");
+const sections = [
+  { key: "paper1", kicker: "From article 1 · clinical value", t: guidance.paper1 },
+  { key: "paper1b", kicker: "From article 2 · what drives performance", t: guidance.paper1b },
+];
+---
+<Base title="Which model?" active="/guide" description="Practical starting points for using frozen CT foundation models in lung cancer prediction.">
+  <div class="page-head"><div class="wrap">
+    <h1>Which foundation model should I use?</h1>
+    <p>There is no single best model for every task. Start from the evidence below, then check your choice in your own data against nodule diameter and a model trained from random weights.</p>
+  </div></div>
+  <div class="wrap">
+    <section>
+      <h2 style="margin-top:0">Ranking by task group</h2>
+      <p class="muted">Pick a task group to rank the encoders by their mean AUC over its tasks (each in its own setup chosen in training data, in the task's main setting). Encoders excluded from a task for pretraining overlap are listed after the ranked ones. The ranking is descriptive: intervals overlap widely and a ranking found in one cohort may not hold in another.</p>
+      <div class="controls"><label>Task group <select id="g"></select></label><label>Show <select id="n"><option>5</option><option>10</option><option selected>18</option></select></label></div>
+      <div class="scroll-x"><table class="tbl" id="rank"></table></div>
+    </section>
+    {sections.map(({ kicker, t }) => (
+      <section>
+        <div class="kicker" style="font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--az-red)">{kicker}</div>
+        <h2 style="margin-top:.2em">{t.title}</h2>
+        <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(330px,1fr))">
+          {t.rows.filter((r) => r[1] || r[2]).map((r) => (
+            <div class="card">
+              <h3 set:html={md(r[0])} />
+              <p style="font-size:.9rem;margin-bottom:.6em"><span class="muted" style="font-weight:600">Finding · </span><span set:html={md(r[1])} /></p>
+              <p style="margin:0;font-size:.95rem"><span style="color:var(--az-red);font-weight:700">→ </span><span set:html={md(r[2])} /></p>
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+    <p class="note">† Finding from a post hoc analysis; hypothesis generating. Differences in AUC are shown with 95% confidence intervals; see the articles for methods and limitations.</p>
+  </div>
+</Base>
+
+<script>
+  import { getJSON, ci2, f2, GROUPS, BASE, seqColor, inkFor } from "../scripts/lib.js";
+  const [tasks, cells, models] = await Promise.all([getJSON("tasks.json"), getJSON("task_models.json"), getJSON("models.json")]);
+  const gs = document.getElementById("g");
+  GROUPS.forEach((g) => gs.insertAdjacentHTML("beforeend", `<option>${g}</option>`));
+  const id = Object.fromEntries(models.map((m) => [m.name, m.id]));
+  function render() {
+    const g = gs.value, n = +document.getElementById("n").value;
+    const tk = tasks.filter((t) => t.group === g);
+    const names = [...models.map((m) => m.name), "Random-weight encoder", "Diameter", "Radiomics"];
+    const rows = names.map((nm) => {
+      const v = tk.map((t) => cells.find((c) => c.task === t.id && c.model === nm)).map((c) => (c && !c.excluded ? c.auc : null));
+      const ok = v.filter(Boolean);
+      return { nm, v, mean: ok.length ? ok.reduce((a, b) => a + b[0], 0) / ok.length : null, k: ok.length };
+    }).filter((r) => r.mean != null);
+    const enc = rows.filter((r) => id[r.nm]).sort((a, b) => (b.k === tk.length) - (a.k === tk.length) || b.mean - a.mean).slice(0, n);
+    const ref = rows.filter((r) => !id[r.nm]);
+    const head = `<thead><tr><th>Rank</th><th>Model</th><th>Mean AUC</th>${tk.map((t) => `<th><a href="${BASE}/tasks/${t.id}/">${t.cohort}</a><br><span class="muted" style="font-weight:500;font-size:.75rem">${t.task.replace(" (screening)", "").replace(" (pathology cohort)", "")}</span></th>`).join("")}</tr></thead>`;
+    const cell = (a) => a ? `<td class="num" style="background:${seqColor(a[0])};color:${inkFor(seqColor(a[0]))}">${ci2(a)}</td>` : `<td class="num muted">excluded</td>`;
+    const tr = (r, i) => `<tr><td>${r.k < tk.length && i ? "–" : (i ?? "")}</td><td>${id[r.nm] ? `<a href="${BASE}/models/${id[r.nm]}/"><b>${r.nm}</b></a>` : `<i>${r.nm}</i>`}${r.k < tk.length ? ` <span class="muted">(${r.k} of ${tk.length})</span>` : ""}</td><td class="num"><b>${f2(r.mean)}</b></td>${r.v.map(cell).join("")}</tr>`;
+    document.getElementById("rank").innerHTML = head + "<tbody>" + enc.map((r, i) => tr(r, i + 1)).join("") +
+      `<tr><td colspan="${3 + tk.length}" style="background:var(--cloud);font-weight:700;color:var(--az-blue)">Comparators and control</td></tr>` +
+      ref.map((r) => tr(r)).join("") + "</tbody>";
+  }
+  gs.onchange = render; document.getElementById("n").onchange = render;
+  render();
+</script>

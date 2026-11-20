@@ -1,0 +1,46 @@
+---
+import Base from "../layouts/Base.astro";
+import meta from "../data/meta.json";
+import cohorts from "../data/cohorts.json";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const files = [
+  ["auc_by_model_and_task.csv", "AUC (95% CI) of every encoder, comparator and control in every task"],
+  ["all_model_setups.csv", `All ${meta.setups} model setups (encoder, feature form, classifier) with AUC (95% CI)`],
+  ["task_models.json", "Per task and model: AUC, default-setup AUC and differences from each comparator (95% CI)"],
+  ["models.json", "Encoder catalog: architecture, pretraining data and overlap with the study cohorts"],
+  ["tasks.json", "Tasks: cohort, setting, size, selected FM setup and range expected by chance"],
+];
+---
+<Base title="About" active="/about" description="Methods, limitations, citation and data for LungFM Atlas.">
+  <div class="page-head"><div class="wrap">
+    <h1>About LungFM Atlas</h1>
+    <p>An open companion to two articles that evaluate publicly available CT foundation models as frozen feature extractors for lung cancer prediction.</p>
+  </div></div>
+  <div class="wrap">
+    <section class="two">
+      <div>
+        <h2 style="margin-top:0">Methods in brief</h2>
+        <p>{meta.encoders} pretrained encoders with public weights were used frozen, with each model's published preprocessing, and read out at the annotated nodule or tumor. A model setup combined an encoder, a feature form and a classifier; {meta.setups} setups were evaluated across {meta.tasks} tasks in {meta.cohorts} public cohorts ({meta.units} nodules or tumors from {meta.participants} participants).</p>
+        <p>For each task, the <b>selected FM setup</b> was the setup with the highest cross-validated AUC in the training data, chosen without test data. Tasks were tested in an <b>external test cohort</b> (trained on the other cohorts with the same task) when one existed and otherwise <b>within cohort</b> by fivefold cross-validation grouped by participant and repeated three times.</p>
+        <p>Comparators were nodule diameter, a diameter-only logistic model, the published Brock model (screening cohorts), radiomics and a <b>random-weight encoder</b> (the same pipeline without pretraining). An encoder was excluded for a cohort that was in its pretraining data, directly or through a parent collection. AUCs carry 95% confidence intervals from 2000 bootstrap resamples of participants; comparisons across many models are descriptive and not adjusted for multiplicity unless stated.</p>
+        <h2>Limitations</h2>
+        <p>The cohorts are retrospective and public, and they differ in prevalence, reference standard and task definition. Several pathology cohorts are small. Inputs were centered on annotated nodules rather than detected automatically. The results describe frozen features with the classifiers tested here, not fine-tuned or multimodal systems, and they do not measure clinical decisions or compare with radiologists.</p>
+      </div>
+      <div>
+        <h2 style="margin-top:0">Cite</h2>
+        <div class="card" style="margin-bottom:12px"><div class="kicker">Article 1</div><p style="margin:.3em 0 0"><b>{meta.title1}</b><br /><span class="muted">Preprint link coming soon.</span></p></div>
+        <div class="card"><div class="kicker">Article 2</div><p style="margin:.3em 0 0"><b>{meta.title1b}</b><br /><span class="muted">Preprint link coming soon.</span></p></div>
+        <h2>Download the results</h2>
+        <table class="tbl">
+          {files.map(([f, d]) => <tr><td><a href={`${base}/data/${f}`} download><b>{f}</b></a></td><td class="muted">{d}</td></tr>)}
+        </table>
+        <p class="muted" style="font-size:.85rem;margin-top:10px">Aggregated results only. The images and labels remain with their original sources:</p>
+        <ul class="muted" style="font-size:.85rem;padding-left:18px">
+          {cohorts.map((c) => <li><b>{c.name}</b>: {c.source}{c.doi && <> · <a href={`https://doi.org/${c.doi}`}>doi:{c.doi}</a></>}</li>)}
+        </ul>
+        <h2>Contact</h2>
+        <p>Built by the <a href="https://tusharlabratory.github.io/">Tushar Lab</a>, Department of Medical Imaging, University of Arizona. Questions and corrections are welcome through the lab website.</p>
+      </div>
+    </section>
+  </div>
+</Base>

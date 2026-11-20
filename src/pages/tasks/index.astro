@@ -1,0 +1,34 @@
+---
+import Base from "../../layouts/Base.astro";
+import tasks from "../../data/tasks.json";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const groups = [...new Set(tasks.map((t) => t.group))];
+const c2 = (a: number[]) => `${a[0].toFixed(2)} (${a[1].toFixed(2)}, ${a[2].toFixed(2)})`;
+---
+<Base title="Tasks and cohorts" active="/tasks" description="The 16 lung cancer prediction tasks and 12 public CT cohorts.">
+  <div class="page-head"><div class="wrap">
+    <h1>Tasks and cohorts</h1>
+    <p>Sixteen prediction tasks from twelve public, deidentified CT cohorts. Each task was evaluated in an external test cohort when one existed (trained on the other cohorts with the same task) and otherwise within cohort by participant-grouped cross-validation.</p>
+  </div></div>
+  <div class="wrap">
+    {groups.map((g) => (
+      <section>
+        <h2 style="margin-top:0">{g}</h2>
+        <div class="scroll-x"><table class="tbl">
+          <thead><tr><th>Cohort</th><th>Task</th><th>Setting</th><th>Nodules or tumors (positive)</th><th>Participants</th><th>Selected FM setup, {tasks.find((t) => t.group === g)?.metric} (95% CI)</th><th>Range expected by chance</th></tr></thead>
+          <tbody>
+            {tasks.filter((t) => t.group === g).map((t) => (
+              <tr>
+                <td><a href={`${base}/tasks/${t.id}/`}><b>{t.cohort}</b></a></td>
+                <td>{t.task}</td><td>{t.main_setting}</td>
+                <td class="num">{t.n} ({t.n_pos})</td><td class="num">{t.participants}</td>
+                <td class="num">{c2(t.selected)}</td>
+                <td class="num">{t.chance[0] != null ? `${t.chance[0].toFixed(2)}–${t.chance[1].toFixed(2)}` : "NA"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table></div>
+      </section>
+    ))}
+  </div>
+</Base>
