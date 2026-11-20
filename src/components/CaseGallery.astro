@@ -2,6 +2,7 @@
 // Paper 1 Figure 6C as a web gallery: eight nodules (two screening cohorts x four groups), each CT section with the
 // percentile of six scores. Images and values come from p41_site_cases.py (same cases and framing as the paper).
 import cases from "../data/cases.json";
+import cells from "../data/task_models.json";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const F = "DM Sans, Arial, sans-serif";
 const COL: Record<string, string> = { D: "#AB0520", B: "#106AB1", S: "#0C234B", F1: "#81CEEB", F2: "#A4AD86", F3: "#C9B6E8" };
@@ -31,6 +32,13 @@ function band(cs: (typeof cases)[number]) {
   });
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Score percentiles within the cohort">${g}</svg>`;
 }
+// hover: encoders ranked by this nodule's percentile, with each encoder's AUC in the cohort
+function hover(cs: (typeof cases)[number]) {
+  const tid = cs.cohort === "DLCS24" ? "T1-DLCS24" : "T1-LUNA25";
+  const auc = (n: string) => cells.find((c) => c.task === tid && c.model === n)?.auc?.[0] ?? null;
+  return { cohort: cs.cohort, group: cs.group, d: cs.diameter_mm, n: cs.encoders.length, k: cs.encoders.filter((e) => e.flagged).length,
+    top: cs.encoders.map((e) => ({ n: e.name, p: e.percentile, f: e.flagged, a: auc(e.name) })) };
+}
 function overlay(cs: (typeof cases)[number]) {
   // arrow, 10-mm bar and diameter as in the paper figure (positions as fractions of the image)
   const n = 100, bar = (10 / cs.fov_mm) * n;
@@ -52,7 +60,7 @@ function overlay(cs: (typeof cases)[number]) {
           {GROUPS.map((c) => {
             const cs = byKey(coh, c);
             return (
-              <figure class="tile">
+              <figure class="tile" tabindex="0" data-hover={JSON.stringify(hover(cs))}>
                 <div class="img">
                   <img src={`${base}/data/${cs.image}`} alt={`Axial CT section, lung window: ${cs.group.toLowerCase()} nodule, ${cs.diameter_mm} mm, ${cs.description.toLowerCase()}, ${coh}`} loading="lazy" width="520" height="520" />
                   <Fragment set:html={overlay(cs)} />
@@ -74,8 +82,24 @@ function overlay(cs: (typeof cases)[number]) {
     <span><i class="zone"></i>Flagged: the score's top {head("a").flagged} of {head("a").nodules} in DLCS24 and {byKey("LUNA25-Dev", "a").flagged} of {byKey("LUNA25-Dev", "a").nodules} in LUNA25-Dev, the same number as the 8-mm threshold</span>
     <span><b>Values</b>, score percentile within the cohort; filled dot and bold value, flagged</span>
   </div>
-  <p class="cgnote">Illustrative examples, not representative (Paper 1, Figure 6C). Images: <a href="https://doi.org/10.48550/arXiv.2405.04605">DLCS24</a> and <a href="https://doi.org/10.1148/ryai.260179">LUNA25-Dev</a>, deidentified public data.</p>
+  <p class="cgnote">Illustrative examples, not representative (Paper 1, Figure 6C). Images: <a href="https://doi.org/10.1148/ryai.240248">DLCS24</a> and <a href="https://doi.org/10.1148/ryai.260179">LUNA25-Dev</a>, deidentified public data.</p>
 </div>
+
+<script>
+  import { tooltip } from "../scripts/lib.js";
+  const tip = tooltip();
+  const html = (h: any) => `<b>${h.group} nodule, ${h.d.toFixed(1)} mm · ${h.cohort}</b><br>Flagged by <b>${h.k} of ${h.n}</b> encoders<table style="margin-top:6px;border-collapse:collapse;font-size:.78rem">` +
+    `<tr style="opacity:.75"><td>Encoder</td><td style="padding-left:10px;text-align:right">Percentile</td><td style="padding-left:10px;text-align:right">AUC in cohort</td></tr>` +
+    h.top.slice(0, 6).map((e: any) => `<tr><td>${e.f ? "● " : "○ "}${e.n}</td><td style="padding-left:10px;text-align:right">${e.p.toFixed(0)}</td><td style="padding-left:10px;text-align:right">${e.a == null ? "–" : e.a.toFixed(2)}</td></tr>`).join("") +
+    `</table><span style="opacity:.75;font-size:.74rem">Top 6 of ${h.n} by this nodule's percentile in the cohort; ● flagged.</span>`;
+  document.querySelectorAll<HTMLElement>(".tile[data-hover]").forEach((el) => {
+    const h = JSON.parse(el.dataset.hover!);
+    el.addEventListener("mousemove", (ev) => tip.show(html(h), ev));
+    el.addEventListener("mouseleave", () => tip.hide());
+    el.addEventListener("focus", () => { const r = el.getBoundingClientRect(); tip.show(html(h), { clientX: r.right - 40, clientY: r.top + 20 } as MouseEvent); });
+    el.addEventListener("blur", () => tip.hide());
+  });
+</script>
 
 <style>
   .cg { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); }
@@ -86,7 +110,8 @@ function overlay(cs: (typeof cases)[number]) {
   .colhead span { font-size: .8rem; color: var(--muted); }
   .rowhead { display: flex; align-items: center; justify-content: center; }
   .rowhead span { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 700; color: var(--head); font-size: .95rem; }
-  .tile { margin: 0; background: #000; border-radius: 6px; overflow: hidden; }
+  .tile { margin: 0; background: #000; border-radius: 6px; overflow: hidden; cursor: help; transition: box-shadow .12s; }
+  .tile:hover, .tile:focus { box-shadow: 0 0 0 3px var(--az-red); outline: none; }
   .img { position: relative; aspect-ratio: 1; }
   .img img { width: 100%; height: 100%; display: block; }
   .img :global(svg.ov) { position: absolute; inset: 0; width: 100%; height: 100%; }

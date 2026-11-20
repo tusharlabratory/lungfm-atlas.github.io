@@ -48,6 +48,93 @@
     "percentile": 59.8497,
     "flagged": false
    }
+  ],
+  "encoders": [
+   {
+    "name": "nnFoundation-CNN",
+    "percentile": 99.6548,
+    "flagged": true
+   },
+   {
+    "name": "CT-CLIP",
+    "percentile": 94.212,
+    "flagged": true
+   },
+   {
+    "name": "MedDINOv3",
+    "percentile": 89.0942,
+    "flagged": true
+   },
+   {
+    "name": "Pillar0-ChestCT",
+    "percentile": 82.5142,
+    "flagged": true
+   },
+   {
+    "name": "Sybil",
+    "percentile": 82.3111,
+    "flagged": true
+   },
+   {
+    "name": "Pillar0-Sybil-1.5",
+    "percentile": 73.1722,
+    "flagged": false
+   },
+   {
+    "name": "MedSigLIP",
+    "percentile": 70.4915,
+    "flagged": false
+   },
+   {
+    "name": "BiomedCLIP",
+    "percentile": 69.2729,
+    "flagged": false
+   },
+   {
+    "name": "Merlin",
+    "percentile": 67.2827,
+    "flagged": false
+   },
+   {
+    "name": "FMCIB",
+    "percentile": 65.0487,
+    "flagged": false
+   },
+   {
+    "name": "nnFoundation-ViT",
+    "percentile": 59.8497,
+    "flagged": false
+   },
+   {
+    "name": "Lingshu",
+    "percentile": 53.1478,
+    "flagged": false
+   },
+   {
+    "name": "Jolia",
+    "percentile": 49.6954,
+    "flagged": false
+   },
+   {
+    "name": "DINOv3",
+    "percentile": 29.4679,
+    "flagged": false
+   },
+   {
+    "name": "MedicalNet",
+    "percentile": 29.3867,
+    "flagged": false
+   },
+   {
+    "name": "Models Genesis",
+    "percentile": 28.6556,
+    "flagged": false
+   },
+   {
+    "name": "CT-FM",
+    "percentile": 15.8205,
+    "flagged": false
+   }
   ]
  },
  {
@@ -99,6 +186,93 @@
     "percentile": 81.9456,
     "flagged": true
    }
+  ],
+  "encoders": [
+   {
+    "name": "DINOv3",
+    "percentile": 95.1056,
+    "flagged": true
+   },
+   {
+    "name": "Pillar0-ChestCT",
+    "percentile": 93.7246,
+    "flagged": true
+   },
+   {
+    "name": "Pillar0-Sybil-1.5",
+    "percentile": 85.2762,
+    "flagged": true
+   },
+   {
+    "name": "MedSigLIP",
+    "percentile": 82.1893,
+    "flagged": true
+   },
+   {
+    "name": "nnFoundation-ViT",
+    "percentile": 81.9456,
+    "flagged": true
+   },
+   {
+    "name": "Jolia",
+    "percentile": 81.6613,
+    "flagged": true
+   },
+   {
+    "name": "BiomedCLIP",
+    "percentile": 80.1584,
+    "flagged": true
+   },
+   {
+    "name": "CT-FM",
+    "percentile": 77.8838,
+    "flagged": true
+   },
+   {
+    "name": "Sybil",
+    "percentile": 77.437,
+    "flagged": false
+   },
+   {
+    "name": "Lingshu",
+    "percentile": 69.5979,
+    "flagged": false
+   },
+   {
+    "name": "FMCIB",
+    "percentile": 58.3469,
+    "flagged": false
+   },
+   {
+    "name": "Merlin",
+    "percentile": 57.9813,
+    "flagged": false
+   },
+   {
+    "name": "Models Genesis",
+    "percentile": 55.0569,
+    "flagged": false
+   },
+   {
+    "name": "MedDINOv3",
+    "percentile": 53.2697,
+    "flagged": false
+   },
+   {
+    "name": "CT-CLIP",
+    "percentile": 49.9391,
+    "flagged": false
+   },
+   {
+    "name": "nnFoundation-CNN",
+    "percentile": 33.2453,
+    "flagged": false
+   },
+   {
+    "name": "MedicalNet",
+    "percentile": 23.1722,
+    "flagged": false
+   }
   ]
  },
  {
@@ -148,6 +322,93 @@
     "code": "F3",
     "name": "nnFoundation-ViT",
     "percentile": 71.9943,
+    "flagged": false
+   }
+  ],
+  "encoders": [
+   {
+    "name": "Pillar0-ChestCT",
+    "percentile": 97.827,
+    "flagged": true
+   },
+   {
+    "name": "MedicalNet",
+    "percentile": 97.3396,
+    "flagged": true
+   },
+   {
+    "name": "Models Genesis",
+    "percentile": 93.6434,
+    "flagged": true
+   },
+   {
+    "name": "CT-FM",
+    "percentile": 89.4598,
+    "flagged": true
+   },
+   {
+    "name": "FMCIB",
+    "percentile": 89.1348,
+    "flagged": true
+   },
+   {
+    "name": "Pillar0-Sybil-1.5",
+    "percentile": 88.6881,
+    "flagged": true
+   },
+   {
+    "name": "MedSigLIP",
+    "percentile": 85.7636,
+    "flagged": true
+   },
+   {
+    "name": "CT-CLIP",
+    "percentile": 82.6361,
+    "flagged": true
+   },
+   {
+    "name": "nnFoundation-CNN",
+    "percentile": 80.1584,
+    "flagged": true
+   },
+   {
+    "name": "Jolia",
+    "percentile": 77.7214,
+    "flagged": true
+   },
+   {
+    "name": "nnFoundation-ViT",
+    "percentile": 71.9943,
+    "flagged": false
+   },
+   {
+    "name": "BiomedCLIP",
+    "percentile": 71.0195,
+    "flagged": false
+   },
+   {
+    "name": "Lingshu",
+    "percentile": 69.1511,
+    "flagged": false
+   },
+   {
+    "name": "MedDINOv3",
+    "percentile": 44.6588,
+    "flagged": false
+   },
+   {
+    "name": "Merlin",
+    "percentile": 41.0845,
+    "flagged": false
+   },
+   {
+    "name": "DINOv3",
+    "percentile": 36.9415,
+    "flagged": false
+   },
+   {
+    "name": "Sybil",
+    "percentile": 14.8457,
     "flagged": false
    }
   ]
@@ -201,6 +462,93 @@
     "percentile": 74.3501,
     "flagged": false
    }
+  ],
+  "encoders": [
+   {
+    "name": "Jolia",
+    "percentile": 88.6068,
+    "flagged": true
+   },
+   {
+    "name": "Sybil",
+    "percentile": 84.5045,
+    "flagged": true
+   },
+   {
+    "name": "BiomedCLIP",
+    "percentile": 84.1795,
+    "flagged": true
+   },
+   {
+    "name": "Pillar0-ChestCT",
+    "percentile": 81.905,
+    "flagged": true
+   },
+   {
+    "name": "FMCIB",
+    "percentile": 81.8643,
+    "flagged": true
+   },
+   {
+    "name": "nnFoundation-CNN",
+    "percentile": 80.2803,
+    "flagged": true
+   },
+   {
+    "name": "Pillar0-Sybil-1.5",
+    "percentile": 79.0617,
+    "flagged": true
+   },
+   {
+    "name": "nnFoundation-ViT",
+    "percentile": 74.3501,
+    "flagged": false
+   },
+   {
+    "name": "MedicalNet",
+    "percentile": 73.0504,
+    "flagged": false
+   },
+   {
+    "name": "Models Genesis",
+    "percentile": 67.8107,
+    "flagged": false
+   },
+   {
+    "name": "DINOv3",
+    "percentile": 67.1202,
+    "flagged": false
+   },
+   {
+    "name": "MedSigLIP",
+    "percentile": 66.2266,
+    "flagged": false
+   },
+   {
+    "name": "Lingshu",
+    "percentile": 22.3193,
+    "flagged": false
+   },
+   {
+    "name": "CT-FM",
+    "percentile": 16.511,
+    "flagged": false
+   },
+   {
+    "name": "Merlin",
+    "percentile": 15.4955,
+    "flagged": false
+   },
+   {
+    "name": "MedDINOv3",
+    "percentile": 11.6775,
+    "flagged": false
+   },
+   {
+    "name": "CT-CLIP",
+    "percentile": 9.8497,
+    "flagged": false
+   }
   ]
  },
  {
@@ -251,6 +599,88 @@
     "name": "nnFoundation-ViT",
     "percentile": 88.5722,
     "flagged": true
+   }
+  ],
+  "encoders": [
+   {
+    "name": "Merlin",
+    "percentile": 99.1869,
+    "flagged": true
+   },
+   {
+    "name": "ResNet50-SWS",
+    "percentile": 96.0597,
+    "flagged": true
+   },
+   {
+    "name": "BiomedCLIP",
+    "percentile": 95.881,
+    "flagged": true
+   },
+   {
+    "name": "Jolia",
+    "percentile": 94.0404,
+    "flagged": true
+   },
+   {
+    "name": "FMCIB",
+    "percentile": 93.7902,
+    "flagged": true
+   },
+   {
+    "name": "Models Genesis",
+    "percentile": 92.0211,
+    "flagged": true
+   },
+   {
+    "name": "MedSigLIP",
+    "percentile": 90.9668,
+    "flagged": true
+   },
+   {
+    "name": "nnFoundation-ViT",
+    "percentile": 88.5722,
+    "flagged": true
+   },
+   {
+    "name": "MedicalNet",
+    "percentile": 86.2491,
+    "flagged": true
+   },
+   {
+    "name": "Lingshu",
+    "percentile": 85.7487,
+    "flagged": true
+   },
+   {
+    "name": "Pillar0-ChestCT",
+    "percentile": 81.1919,
+    "flagged": true
+   },
+   {
+    "name": "CT-FM",
+    "percentile": 76.2777,
+    "flagged": true
+   },
+   {
+    "name": "DINOv3",
+    "percentile": 70.5236,
+    "flagged": false
+   },
+   {
+    "name": "MedDINOv3",
+    "percentile": 67.9146,
+    "flagged": false
+   },
+   {
+    "name": "nnFoundation-CNN",
+    "percentile": 56.4421,
+    "flagged": false
+   },
+   {
+    "name": "CT-CLIP",
+    "percentile": 50.0,
+    "flagged": false
    }
   ]
  },
@@ -303,6 +733,88 @@
     "percentile": 94.094,
     "flagged": true
    }
+  ],
+  "encoders": [
+   {
+    "name": "BiomedCLIP",
+    "percentile": 98.4364,
+    "flagged": true
+   },
+   {
+    "name": "MedicalNet",
+    "percentile": 97.1497,
+    "flagged": true
+   },
+   {
+    "name": "MedSigLIP",
+    "percentile": 95.4521,
+    "flagged": true
+   },
+   {
+    "name": "nnFoundation-ViT",
+    "percentile": 94.094,
+    "flagged": true
+   },
+   {
+    "name": "CT-FM",
+    "percentile": 93.6472,
+    "flagged": true
+   },
+   {
+    "name": "DINOv3",
+    "percentile": 91.1276,
+    "flagged": true
+   },
+   {
+    "name": "FMCIB",
+    "percentile": 86.946,
+    "flagged": true
+   },
+   {
+    "name": "MedDINOv3",
+    "percentile": 79.7087,
+    "flagged": true
+   },
+   {
+    "name": "ResNet50-SWS",
+    "percentile": 78.8331,
+    "flagged": true
+   },
+   {
+    "name": "Lingshu",
+    "percentile": 69.5765,
+    "flagged": false
+   },
+   {
+    "name": "Jolia",
+    "percentile": 66.8603,
+    "flagged": false
+   },
+   {
+    "name": "Models Genesis",
+    "percentile": 57.0139,
+    "flagged": false
+   },
+   {
+    "name": "Merlin",
+    "percentile": 54.6551,
+    "flagged": false
+   },
+   {
+    "name": "CT-CLIP",
+    "percentile": 50.0,
+    "flagged": false
+   },
+   {
+    "name": "Pillar0-ChestCT",
+    "percentile": 35.1948,
+    "flagged": false
+   },
+   {
+    "name": "nnFoundation-CNN",
+    "percentile": 28.4042,
+    "flagged": false
+   }
   ]
  },
  {
@@ -354,6 +866,88 @@
     "percentile": 81.7102,
     "flagged": true
    }
+  ],
+  "encoders": [
+   {
+    "name": "nnFoundation-ViT",
+    "percentile": 81.7102,
+    "flagged": true
+   },
+   {
+    "name": "ResNet50-SWS",
+    "percentile": 80.1555,
+    "flagged": true
+   },
+   {
+    "name": "DINOv3",
+    "percentile": 76.9389,
+    "flagged": true
+   },
+   {
+    "name": "BiomedCLIP",
+    "percentile": 70.4878,
+    "flagged": false
+   },
+   {
+    "name": "FMCIB",
+    "percentile": 70.2198,
+    "flagged": false
+   },
+   {
+    "name": "MedDINOv3",
+    "percentile": 69.8267,
+    "flagged": false
+   },
+   {
+    "name": "Merlin",
+    "percentile": 65.0733,
+    "flagged": false
+   },
+   {
+    "name": "Jolia",
+    "percentile": 61.9818,
+    "flagged": false
+   },
+   {
+    "name": "Pillar0-ChestCT",
+    "percentile": 56.871,
+    "flagged": false
+   },
+   {
+    "name": "Lingshu",
+    "percentile": 53.7616,
+    "flagged": false
+   },
+   {
+    "name": "CT-CLIP",
+    "percentile": 50.0,
+    "flagged": false
+   },
+   {
+    "name": "MedSigLIP",
+    "percentile": 45.6308,
+    "flagged": false
+   },
+   {
+    "name": "CT-FM",
+    "percentile": 36.6244,
+    "flagged": false
+   },
+   {
+    "name": "MedicalNet",
+    "percentile": 26.9389,
+    "flagged": false
+   },
+   {
+    "name": "Models Genesis",
+    "percentile": 11.1776,
+    "flagged": false
+   },
+   {
+    "name": "nnFoundation-CNN",
+    "percentile": 1.1705,
+    "flagged": false
+   }
   ]
  },
  {
@@ -404,6 +998,88 @@
     "name": "nnFoundation-ViT",
     "percentile": 88.0718,
     "flagged": true
+   }
+  ],
+  "encoders": [
+   {
+    "name": "Pillar0-ChestCT",
+    "percentile": 90.3413,
+    "flagged": true
+   },
+   {
+    "name": "Models Genesis",
+    "percentile": 89.6444,
+    "flagged": true
+   },
+   {
+    "name": "nnFoundation-ViT",
+    "percentile": 88.0718,
+    "flagged": true
+   },
+   {
+    "name": "DINOv3",
+    "percentile": 87.8038,
+    "flagged": true
+   },
+   {
+    "name": "nnFoundation-CNN",
+    "percentile": 87.3034,
+    "flagged": true
+   },
+   {
+    "name": "Merlin",
+    "percentile": 86.5172,
+    "flagged": true
+   },
+   {
+    "name": "CT-FM",
+    "percentile": 86.1061,
+    "flagged": true
+   },
+   {
+    "name": "Lingshu",
+    "percentile": 82.3892,
+    "flagged": true
+   },
+   {
+    "name": "Jolia",
+    "percentile": 79.7445,
+    "flagged": true
+   },
+   {
+    "name": "BiomedCLIP",
+    "percentile": 74.1512,
+    "flagged": true
+   },
+   {
+    "name": "FMCIB",
+    "percentile": 70.8452,
+    "flagged": false
+   },
+   {
+    "name": "MedDINOv3",
+    "percentile": 69.3442,
+    "flagged": false
+   },
+   {
+    "name": "MedicalNet",
+    "percentile": 54.2977,
+    "flagged": false
+   },
+   {
+    "name": "CT-CLIP",
+    "percentile": 50.0,
+    "flagged": false
+   },
+   {
+    "name": "MedSigLIP",
+    "percentile": 33.6758,
+    "flagged": false
+   },
+   {
+    "name": "ResNet50-SWS",
+    "percentile": 31.0668,
+    "flagged": false
    }
   ]
  }
