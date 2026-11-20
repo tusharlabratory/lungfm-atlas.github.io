@@ -123,7 +123,7 @@ import Base from "../layouts/Base.astro";
     let html = `<b>${n}</b><br>${t.cohort} · ${t.task} (${t.main_setting.toLowerCase()})<br>`;
     if (c.excluded) html += "Excluded: the cohort or its parent collection was in this model's pretraining data.";
     else {
-      html += `AUC ${ci2(c.auc)}`;
+      html += `AUC ${ci2(c.auc)}${c.auc[1] === c.auc[2] ? " (constant scores: the chosen setup gave the same score for every nodule)" : ""}`;
       if (c.default) html += `<br>Default setup ${ci2(c.default)}`;
       if (c.vs && isDelta()) html += `<br>Difference ${ci3(c.vs[st.metric])}`;
       if (c.best_comparator && c.kind !== "comparator") html += `<br><span style="opacity:.8">Best comparator: ${c.best_comparator} ${f2(c.best_comparator_auc)}</span>`;

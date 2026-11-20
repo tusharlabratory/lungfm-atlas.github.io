@@ -11,6 +11,8 @@ The images and labels remain with their original sources, listed on the About pa
 
 ## Pages
 - **Explorer**: encoder × task heat map (AUC or difference from diameter, radiomics, the Brock model or the best comparator)
+- **Network**: force-directed (or column) graph of encoders, pretraining types, tasks and cohorts; performance links (top 3, above best comparator, above diameter, AUC threshold) and pretraining overlap links; search, zoom, details panel; deep link `?select=enc:Sybil`
+- **Build a comparison**: pick task-type, dataset and model boxes; best performers and the setup to start from; forest plot, heat map or ranking downloadable as PNG (300 dpi), SVG and CSV; shareable link
 - **Models**: one page per encoder (architecture, pretraining data, pretraining overlap, performance in every task)
 - **Tasks**: one page per task and cohort with every model on the same test participants
 - **Model setups**: all encoder × feature form × classifier combinations per task
@@ -32,4 +34,6 @@ The data in `public/data` and `src/data` are exported from the study results by 
 ## Citation
 Preprints of the two companion articles will be linked here when available.
 
-Built by the [Tushar Lab](https://tusharlabratory.github.io/), Department of Medical Imaging, University of Arizona.
+Built by the [Tushar Lab](https://tusharlabratory.github.io/), Department of Radiology and Imaging Sciences, University of Arizona.
+
+Branding follows the Tushar Lab website (white header, Source Serif 4 and DM Sans, Arizona Red accents); logos are in `public/brand/`.

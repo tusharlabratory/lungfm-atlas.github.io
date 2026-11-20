@@ -8,6 +8,8 @@ const stats = [
   [meta.units, "nodules or tumors"], [meta.setups, "model setups evaluated"],
 ];
 const sections = [
+  ["Build a comparison", "/build", "Pick tasks, cohorts and models as boxes; get the best performers in your selection and a figure you can download."],
+  ["Network", "/network", "Graph of how encoders, pretraining types, cohorts and tasks connect: which models win which tasks, and which pretraining data overlap the study cohorts."],
   ["Explorer", "/explorer", "Heat map of every foundation model across every task: AUC, and the difference from nodule diameter, the Brock model, radiomics or the best comparator."],
   ["Models", "/models", "One card per encoder: architecture, pretraining data, pretraining overlap with the study cohorts and performance across all tasks."],
   ["Tasks and cohorts", "/tasks", "Each task and cohort: labels, size and source, with every encoder and comparator on the same test participants."],
@@ -20,13 +22,26 @@ const sections = [
   <section class="hero">
     <div class="wrap">
       <span class="badge">Open benchmark · Lung cancer · CT</span>
-      <h1>LungFM Atlas</h1>
+      <h1>LungFM <span class="red">Atlas</span></h1>
+      <p class="dept">Tushar Lab · Department of Radiology and Imaging Sciences · University of Arizona</p>
       <p class="lead">How well do publicly available CT foundation models predict lung cancer outcomes when used as frozen feature extractors? Explore {meta.encoders} encoders across {meta.tasks} tasks in {meta.cohorts} public cohorts, compared with nodule diameter, the Brock model and radiomics.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px">
+        <a class="btn btn-primary" href={`${base}/build/`}>Build a comparison</a>
+        <a class="btn btn-outline" href={`${base}/explorer/`}>Open the explorer</a>
+        <a class="btn btn-outline" href={`${base}/network/`}>See the network</a>
+      </div>
       <div class="stats">
         {stats.map(([n, l]) => <div class="stat"><b>{n}</b><span>{l}</span></div>)}
       </div>
     </div>
   </section>
+  <div style="background:var(--panel);border-bottom:1px solid var(--line)">
+    <div class="wrap affil">
+      <a href="https://tusharlabratory.github.io/" aria-label="Tushar Lab"><img class="lab" src={`${base}/brand/tusharlab-logo-crop.svg`} alt="Tushar Lab" /></a>
+      <span class="div" aria-hidden="true"></span>
+      <a href="https://radiology.arizona.edu/" aria-label="Department of Radiology and Imaging Sciences, University of Arizona"><img class="dept" src={`${base}/brand/radiology-imaging-sciences.png`} alt="Radiology and Imaging Sciences, University of Arizona" /></a>
+    </div>
+  </div>
 
   <section>
     <div class="wrap two">

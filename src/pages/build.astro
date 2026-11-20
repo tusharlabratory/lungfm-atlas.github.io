@@ -1,0 +1,295 @@
+---
+import Base from "../layouts/Base.astro";
+---
+<Base title="Build a comparison" active="/build" description="Pick tasks, cohorts and models as boxes; see the best performers in your selection and download a publication-style figure.">
+  <div class="page-head"><div class="wrap">
+    <h1>Build a comparison</h1>
+    <p>Pick the task types, cohorts and models you care about. The page finds the best performers in your selection, gives the setup to start from, and draws a figure you can download.</p>
+  </div></div>
+  <div class="wrap buildgrid">
+    <div>
+      <div class="step" style="border-top:0">
+        <span class="n">1</span>
+        <div><h3>Task type <button class="mini" data-all="types">all</button><button class="mini" data-none="types">none</button></h3>
+          <p class="muted" style="font-size:.86rem;margin:0 0 8px">What do you want to predict?</p>
+          <div class="chips" id="types"></div></div>
+      </div>
+      <div class="step">
+        <span class="n">2</span>
+        <div><h3>Dataset <button class="mini" data-all="cohorts">all</button><button class="mini" data-none="cohorts">none</button></h3>
+          <p class="muted" style="font-size:.86rem;margin:0 0 8px">Which cohorts? Faded boxes have no task of the selected types.</p>
+          <div class="chips" id="cohorts"></div>
+          <p style="font-size:.86rem;margin:10px 0 0" id="taskline"></p></div>
+      </div>
+      <div class="step">
+        <span class="n">3</span>
+        <div><h3>Models <button class="mini" data-all="models">all</button><button class="mini" data-none="models">none</button></h3>
+          <p class="muted" style="font-size:.86rem;margin:0 0 8px">Quick picks:
+            <button class="mini" data-pick="Vision-language">vision-language</button><button class="mini" data-pick="Self-supervised">self-supervised</button><button class="mini" data-pick="Supervised">supervised</button><button class="mini" data-pick="3D">3D</button><button class="mini" data-pick="2D">2D</button></p>
+          <div id="models"></div>
+          <h4 class="sub">Comparators and control</h4>
+          <div class="chips" id="comps"></div></div>
+      </div>
+      <div class="step">
+        <span class="n">4</span>
+        <div><h3>Options</h3>
+          <div class="controls" style="margin:6px 0 0">
+            <label>Setup
+              <div class="seg" id="setup"><button data-v="chosen" class="on">Chosen in training data</button><button data-v="default">Default</button></div>
+            </label>
+            <label>Rank encoders by
+              <select id="rank">
+                <option value="mean">Mean AUC</option>
+                <option value="diff">Mean difference from the best comparator</option>
+                <option value="wins">Tasks with 95% CI above the best comparator</option>
+              </select>
+            </label>
+          </div></div>
+      </div>
+    </div>
+
+    <div class="results">
+      <div class="resultcard">
+        <div class="kicker">Best in your selection</div>
+        <div id="best"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="resultcard" style="margin-top:8px">
+      <div class="kicker">Task by task: the best performer in your selection and the setup to start from</div>
+      <div class="scroll-x"><table class="tbl" id="pertask" style="font-size:.86rem"></table></div>
+    </div>
+    <section style="padding-top:8px">
+      <div class="step">
+        <span class="n">5</span>
+        <div style="min-width:0">
+          <h3>Figure</h3>
+          <div class="controls" style="margin:6px 0 12px">
+            <label>Figure type
+              <div class="seg" id="fig"><button data-v="forest" class="on">Forest plot</button><button data-v="heat">Heat map</button><button data-v="rank">Ranking</button></div>
+            </label>
+            <label>Download
+              <span style="display:flex;gap:6px">
+                <button class="btn btn-primary" style="padding:6px 12px;font-size:.86rem" id="dpng">PNG (300 dpi)</button>
+                <button class="btn btn-outline" style="padding:6px 12px;font-size:.86rem" id="dsvg">SVG</button>
+                <button class="btn btn-outline" style="padding:6px 12px;font-size:.86rem" id="dcsv">CSV</button>
+                <button class="btn btn-outline" style="padding:6px 12px;font-size:.86rem" id="dlink">Copy link</button>
+              </span>
+            </label>
+          </div>
+          <p class="muted" id="figwarn" style="font-size:.86rem"></p>
+          <div class="figbox scroll-x" id="figure"></div>
+          <div class="note" style="margin-top:12px"><b>Suggested legend.</b> <span id="legendtxt"></span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style is:global>
+  .buildgrid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 28px; padding-top: 18px; align-items: start; }
+  @media (max-width: 1000px) { .buildgrid { grid-template-columns: 1fr; } }
+  .results { position: sticky; top: 84px; }
+  @media (max-width: 1000px) { .results { position: static; } }
+  .resultcard { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .resultcard .kicker { font-size: .74rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--az-red); margin-bottom: 6px; }
+  .bestgrid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .bestgrid div { background: var(--panel); border-radius: 10px; padding: 10px 12px; border: 1px solid var(--line); }
+  .bestgrid b.big { display: block; font-family: var(--font-head); font-size: 1.15rem; color: var(--head); line-height: 1.2; }
+  .bestgrid span { font-size: .8rem; color: var(--muted); }
+  h4.sub { font-family: var(--font); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
+  .famlab { font-size: .8rem; font-weight: 600; color: var(--head); margin: 10px 0 5px; display: flex; align-items: center; gap: 6px; }
+  .famlab i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .figbox { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .figbox svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+  .verdict { font-size: .74rem; font-weight: 700; padding: 1px 7px; border-radius: 99px; white-space: nowrap; }
+  .v-up { background: #e3eef8; color: #0c234b; } .v-down { background: #f7e3e6; color: #850000; } .v-eq { background: #eef0f2; color: #475569; }
+</style>
+
+<script>
+  import { getJSON, ci2, ci3, f2, f3s, BASE, taskLabel, FAMILY_COLOR, COMPARATORS } from "../scripts/lib.js";
+  import { forestSVG, heatSVG, rankSVG, download, downloadPNG } from "../scripts/figs.js";
+
+  const [tasks, cells, models] = await Promise.all([getJSON("tasks.json"), getJSON("task_models.json"), getJSON("models.json")]);
+  const TYPES = [...new Set(tasks.map((t) => t.task))];
+  const COHORTS = [...new Set(tasks.map((t) => t.cohort))];
+  const FAMS = Object.keys(FAMILY_COLOR);
+  const COMP_COLOR = { "Diameter": "#545F6B", "Diameter-only logistic model": "#7F8B5A", "Brock model": "#AB0520", "Radiomics": "#1E5288", "Random-weight encoder": "#94A3B8" };
+  const byKey = new Map(cells.map((c) => [`${c.task}|${c.model}`, c]));
+
+  const st = {
+    types: new Set(["Malignancy (screening)"]), cohorts: new Set(COHORTS), models: new Set(models.map((m) => m.name)),
+    comps: new Set(["Diameter", "Brock model", "Radiomics", "Random-weight encoder"]), setup: "chosen", rank: "mean", fig: "forest",
+  };
+  // restore from link
+  try {
+    const h = new URLSearchParams(location.hash.slice(1));
+    const idx = (k, arr) => h.has(k) ? new Set(h.get(k).split(",").filter((x) => x !== "").map((i) => arr[+i]).filter(Boolean)) : null;
+    st.types = idx("t", TYPES) ?? st.types; st.cohorts = idx("d", COHORTS) ?? st.cohorts;
+    st.models = idx("m", models.map((m) => m.name)) ?? st.models; st.comps = idx("c", COMPARATORS) ?? st.comps;
+    st.setup = h.get("s") ?? st.setup; st.rank = h.get("r") ?? st.rank; st.fig = h.get("f") ?? st.fig;
+  } catch (e) { /* ignore a malformed link */ }
+
+  const chip = (set, key, label, sub, extra = "") => `<button class="chip${set.has(key) ? " on" : ""}" data-key="${key}" ${extra}>${label}${sub ? `<small>${sub}</small>` : ""}</button>`;
+
+  function drawChips() {
+    const possibleT = new Set(tasks.filter((t) => st.cohorts.has(t.cohort)).map((t) => t.task));
+    const possibleD = new Set(tasks.filter((t) => st.types.has(t.task)).map((t) => t.cohort));
+    document.getElementById("types").innerHTML = TYPES.map((ty) => {
+      const n = tasks.filter((t) => t.task === ty).length, g = tasks.find((t) => t.task === ty).group;
+      return chip(st.types, ty, ty, `${g} · ${n} cohort${n > 1 ? "s" : ""}`).replace('class="chip', `class="chip${possibleT.has(ty) ? "" : " off"}`);
+    }).join("");
+    document.getElementById("cohorts").innerHTML = COHORTS.map((c) => {
+      const tk = tasks.filter((t) => t.cohort === c);
+      const p = Math.max(...tk.map((t) => t.participants));
+      return chip(st.cohorts, c, c, `${p} participants · ${tk.length} task${tk.length > 1 ? "s" : ""}`).replace('class="chip', `class="chip${possibleD.has(c) ? "" : " off"}`);
+    }).join("");
+    document.getElementById("models").innerHTML = FAMS.map((f) => `<div class="famlab"><i style="background:${FAMILY_COLOR[f]};border:1px solid ${f.startsWith("2D") ? "#106AB1" : FAMILY_COLOR[f]}"></i>${f}</div><div class="chips">` +
+      models.filter((m) => m.family === f).map((m) => chip(st.models, m.name, m.name, `${m.pretraining_class} · ${m.dimensionality.startsWith("2D") ? "2D" : "3D"}`)).join("") + "</div>").join("");
+    document.getElementById("comps").innerHTML = COMPARATORS.map((c) => chip(st.comps, c, c, c === "Brock model" ? "screening cohorts only" : c === "Random-weight encoder" ? "untrained 3D ResNet-50" : "")).join("");
+    for (const id of ["setup", "fig"]) [...document.getElementById(id).children].forEach((b) => b.classList.toggle("on", b.dataset.v === st[id]));
+    document.getElementById("rank").value = st.rank;
+    document.querySelector('#rank option[value="diff"]').disabled = st.setup === "default";
+    document.querySelector('#rank option[value="wins"]').disabled = st.setup === "default";
+  }
+
+  const selTasks = () => tasks.filter((t) => st.types.has(t.task) && st.cohorts.has(t.cohort));
+  function val(t, name) {
+    const c = byKey.get(`${t.id}|${name}`);
+    if (!c) return null;
+    if (c.excluded) return { excluded: true, c };
+    const a = st.setup === "default" && c.kind === "encoder" ? c.default : c.auc;
+    return a && a[0] != null ? { a, c } : null;
+  }
+  const encColor = (name) => { const m = models.find((x) => x.name === name); return m ? (m.family.startsWith("2D") ? "#3D92C8" : FAMILY_COLOR[m.family]) : COMP_COLOR[name]; };
+
+  function summarize(tk) {
+    const encs = models.map((m) => m.name).filter((n) => st.models.has(n));
+    const comps = COMPARATORS.filter((n) => st.comps.has(n));
+    const rows = [...encs, ...comps].map((n) => {
+      const vs = tk.map((t) => val(t, n)).filter((v) => v && !v.excluded);
+      const a = vs.map((v) => v.a[0]);
+      const diffs = vs.map((v) => v.c.vs?.best?.[0]).filter((x) => x != null);
+      return { name: n, comparator: !encs.includes(n), k: a.length, n: tk.length, mean: a.length ? a.reduce((x, y) => x + y, 0) / a.length : null,
+        min: a.length ? Math.min(...a) : null, max: a.length ? Math.max(...a) : null,
+        diff: diffs.length ? diffs.reduce((x, y) => x + y, 0) / diffs.length : null, wins: vs.filter((v) => v.c.vs?.best && v.c.vs.best[1] > 0).length,
+        color: encColor(n) };
+    }).filter((r) => r.k > 0);
+    const key = { mean: (r) => r.mean, diff: (r) => r.diff ?? -9, wins: (r) => r.wins + r.mean / 10 }[st.setup === "default" ? "mean" : st.rank];
+    const E = rows.filter((r) => !r.comparator).sort((a, b) => (b.k === b.n) - (a.k === a.n) || key(b) - key(a));
+    const Cp = rows.filter((r) => r.comparator).sort((a, b) => b.mean - a.mean);
+    return { E, Cp };
+  }
+
+  function render() {
+    drawChips();
+    const tk = selTasks();
+    document.getElementById("taskline").innerHTML = tk.length
+      ? `<b>${tk.length} task${tk.length > 1 ? "s" : ""} selected:</b> ${tk.map((t) => `<a href="${BASE}/tasks/${t.id}/">${taskLabel(t)}</a>`).join(", ")}`
+      : `<b style="color:var(--az-red)">No task matches.</b> Pick a task type and a dataset that share a task.`;
+    const best = document.getElementById("best"), pt = document.getElementById("pertask"), fig = document.getElementById("figure");
+    if (!tk.length || (!st.models.size && !st.comps.size)) {
+      best.innerHTML = `<p class="muted">Select at least one task and one model.</p>`; pt.innerHTML = ""; fig.innerHTML = ""; document.getElementById("legendtxt").textContent = ""; return;
+    }
+    const { E, Cp } = summarize(tk);
+    const full = E.filter((r) => r.k === r.n);
+    const metricName = st.rank === "diff" && st.setup !== "default" ? "mean difference" : st.rank === "wins" && st.setup !== "default" ? "tasks above" : "mean AUC";
+    const show = (r) => st.rank === "diff" && st.setup !== "default" ? f3s(r.diff) : st.rank === "wins" && st.setup !== "default" ? `${r.wins} of ${r.n}` : f2(r.mean);
+    best.innerHTML = `<div class="bestgrid">
+      <div><span>Top encoder (${metricName})</span><b class="big">${full[0] ? full[0].name : E[0]?.name ?? "–"}</b><span>${full[0] ? show(full[0]) : E[0] ? `${show(E[0])}, ${E[0].k} of ${E[0].n} tasks` : ""}${full.length > 1 ? ` · then ${full.slice(1, 3).map((r) => `${r.name} ${show(r)}`).join(", ")}` : ""}</span></div>
+      <div><span>Best comparator (mean AUC)</span><b class="big">${Cp[0] ? Cp[0].name : "none selected"}</b><span>${Cp[0] ? f2(Cp[0].mean) : ""}${Cp[1] ? ` · then ${Cp[1].name} ${f2(Cp[1].mean)}` : ""}</span></div>
+      <div><span>Tasks where an encoder's 95% CI is above the best comparator</span><b class="big">${st.setup === "default" ? "–" : `${tk.filter((t) => E.some((r) => { const v = val(t, r.name); return v && !v.excluded && v.c.vs?.best?.[1] > 0; })).length} of ${tk.length}`}</b><span>${st.setup === "default" ? "available for the setup chosen in training data" : "best comparator chosen with the test labels"}</span></div>
+    </div>
+    <p class="muted" style="font-size:.8rem;margin:10px 0 0">Means are over the selected tasks; ${E.length - full.length ? `${E.length - full.length} encoder(s) excluded from a task for pretraining overlap are ranked after the others. ` : ""}Intervals overlap widely, so treat a rank as a starting point and check it in your own data against diameter and the random-weight encoder.</p>`;
+
+    // per task
+    pt.innerHTML = `<thead><tr><th>Task</th><th>Best selected encoder</th><th>Setup to start from</th><th>Best selected comparator</th>${st.setup === "default" ? "" : "<th>Difference from the task's best comparator</th>"}</tr></thead><tbody>` +
+      tk.map((t) => {
+        const e = [...st.models].map((n) => ({ n, v: val(t, n) })).filter((x) => x.v && !x.v.excluded).sort((a, b) => b.v.a[0] - a.v.a[0])[0];
+        const cp = [...st.comps].map((n) => ({ n, v: val(t, n) })).filter((x) => x.v).sort((a, b) => b.v.a[0] - a.v.a[0])[0];
+        const d = e?.v.c.vs?.best;
+        const verdict = !d ? "" : d[1] > 0 ? `<span class="verdict v-up">above</span>` : d[2] < 0 ? `<span class="verdict v-down">below</span>` : `<span class="verdict v-eq">not distinguished</span>`;
+        const setup = e ? (st.setup === "default" ? models.find((m) => m.name === e.n)?.default_feature_form + (t.metric === "AUC" ? ", L2 logistic regression" : ", penalized Cox model") : e.v.c.setup) : "";
+        return `<tr><td><a href="${BASE}/tasks/${t.id}/">${taskLabel(t)}</a><br><span class="muted" style="font-size:.76rem">${t.main_setting}${t.metric !== "AUC" ? " · C index" : ""}</span></td>
+          <td>${e ? `<b>${e.n}</b><br><span class="num">${ci2(e.v.a)}</span>` : "–"}</td><td style="font-size:.8rem">${setup ?? ""}</td>
+          <td>${cp ? `<i>${cp.n}</i><br><span class="num">${ci2(cp.v.a)}</span>` : "–"}</td>${st.setup === "default" ? "" : `<td class="num">${d ? `${ci3(d)}<br>${verdict}` : "–"}</td>`}</tr>`;
+      }).join("") + "</tbody>";
+
+    // figure
+    let svg = "", legend = "";
+    const setupTxt = st.setup === "default" ? "each encoder in its prespecified default setup (default feature form with L2-regularized logistic regression)" : "each encoder in the setup (feature form and classifier) chosen by cross-validated AUC in the training data";
+    const surv = tk.some((t) => t.metric !== "AUC") ? " For survival the metric is the C index." : "";
+    if (st.fig === "forest") {
+      const blocks = tk.map((t) => {
+        const it = [...E.map((r) => r.name), ...models.map((m) => m.name).filter((n) => st.models.has(n) && !E.find((r) => r.name === n))]
+          .map((n) => ({ n, v: val(t, n) })).filter((x) => x.v)
+          .sort((a, b) => (b.v.excluded ? -1 : b.v.a[0]) - (a.v.excluded ? -1 : a.v.a[0]))
+          .map(({ n, v }) => v.excluded ? { name: n, est: null } : { name: n, est: v.a[0], lo: v.a[1], hi: v.a[2], color: encColor(n), constant: v.a[1] === v.a[2] });
+        const cp = COMPARATORS.filter((n) => st.comps.has(n)).map((n) => ({ n, v: val(t, n) })).filter((x) => x.v)
+          .map(({ n, v }) => ({ name: n, est: v.a[0], lo: v.a[1], hi: v.a[2], color: COMP_COLOR[n], comparator: true, hollow: n === "Random-weight encoder" }));
+        return { task: `${t.cohort} · ${t.task} (${t.main_setting.toLowerCase()})`, items: [...it, ...cp] };
+      });
+      const nrows = blocks.reduce((a, b) => a + b.items.length, 0);
+      document.getElementById("figwarn").textContent = nrows > 160 ? `${nrows} rows: consider the heat map, or fewer models or tasks, for a compact figure.` : "";
+      svg = forestSVG(blocks, { axisLabel: tk.some((t) => t.metric !== "AUC") ? "AUC or C index (95% CI)" : "AUC (95% CI)" });
+      legend = `Forest plot shows the area under the receiver operating characteristic curve (AUC) with 95% CIs for ${setupTxt}, sorted within each task from highest to lowest, with the comparators below (diamonds; hollow diamond, random-weight encoder). The dashed line marks 0.50. CIs are from participant-level bootstrap.${blocks.some((b) => b.items.some((i) => i.constant)) ? " Constant scores: the chosen setup gave the same score for every nodule (all coefficients shrunk to zero at refit), so the AUC is 0.50 with no interval." : ""}${surv}`;
+    } else if (st.fig === "heat") {
+      document.getElementById("figwarn").textContent = "";
+      const rows = [...E.map((r) => r.name), ...Cp.map((r) => r.name)];
+      svg = heatSVG(rows, tk.map((t) => ({ label: taskLabel(t), t })), (r, c) => { const v = val(c.t, r); return v ? (v.excluded ? { excluded: true } : { v: v.a[0] }) : null; },
+        { sepAfter: E.length - 1, comparatorRows: new Set(Cp.map((r) => r.name)) });
+      legend = `Heat map shows the AUC of ${setupTxt}, by task (columns), with encoders ordered by ${metricName} and the comparators below. Hatched cells, encoder excluded from the task because the cohort or its parent collection was in its pretraining data.${surv}`;
+    } else {
+      document.getElementById("figwarn").textContent = "";
+      const items = [...E.map((r) => r), ...Cp].sort((a, b) => b.mean - a.mean);
+      svg = rankSVG(items);
+      legend = `Dot plot shows the mean AUC over the ${tk.length} selected task${tk.length > 1 ? "s" : ""} for ${setupTxt} and for the comparators (diamonds); the shaded bar spans the lowest to the highest task AUC (not a CI). Models evaluated in fewer tasks show the count in parentheses. The ranking is descriptive.${surv}`;
+    }
+    fig.innerHTML = svg;
+    fig.dataset.svg = svg;
+    document.getElementById("legendtxt").textContent = legend;
+    // keep a shareable link
+    const ix = (set, arr) => arr.map((x, i) => (set.has(x) ? i : -1)).filter((i) => i >= 0).join(",");
+    history.replaceState(null, "", "#" + new URLSearchParams({ t: ix(st.types, TYPES), d: ix(st.cohorts, COHORTS), m: ix(st.models, models.map((m) => m.name)), c: ix(st.comps, COMPARATORS), s: st.setup, r: st.rank, f: st.fig }).toString());
+    window.__csv = () => {
+      const head = ["task", "cohort", "setting", "metric", "model", "kind", "setup", "estimate", "ci_low", "ci_high", "excluded", "diff_best_comparator", "diff_ci_low", "diff_ci_high"];
+      const lines = [head.join(",")];
+      for (const t of tk) for (const n of [...models.map((m) => m.name).filter((x) => st.models.has(x)), ...COMPARATORS.filter((x) => st.comps.has(x))]) {
+        const v = val(t, n); if (!v) continue;
+        const c = v.c, d = st.setup === "default" ? null : c.vs?.best;
+        lines.push([t.task, t.cohort, t.main_setting, t.metric, n, c.kind, st.setup === "default" && c.kind === "encoder" ? "default" : (c.setup ?? ""), ...(v.excluded ? ["", "", "", "yes"] : [...v.a.map((x) => x.toFixed(4)), "no"]), ...(d ? d.map((x) => x.toFixed(4)) : ["", "", ""])]
+          .map((x) => /[",]/.test(String(x)) ? `"${String(x).replace(/"/g, '""')}"` : x).join(","));
+      }
+      return lines.join("\n");
+    };
+  }
+
+  // events
+  function toggler(id, set) {
+    document.getElementById(id).addEventListener("click", (e) => {
+      const b = e.target.closest(".chip"); if (!b) return;
+      const k = b.dataset.key; set().has(k) ? set().delete(k) : set().add(k); render();
+    });
+  }
+  toggler("types", () => st.types); toggler("cohorts", () => st.cohorts); toggler("models", () => st.models); toggler("comps", () => st.comps);
+  const ALL = { types: () => TYPES, cohorts: () => COHORTS, models: () => models.map((m) => m.name) };
+  document.querySelectorAll("[data-all]").forEach((b) => b.onclick = () => { st[b.dataset.all] = new Set(ALL[b.dataset.all]()); render(); });
+  document.querySelectorAll("[data-none]").forEach((b) => b.onclick = () => { st[b.dataset.none] = new Set(); render(); });
+  document.querySelectorAll("[data-pick]").forEach((b) => b.onclick = () => {
+    const p = b.dataset.pick;
+    st.models = new Set(models.filter((m) => p === "3D" ? !m.dimensionality.startsWith("2D") : p === "2D" ? m.dimensionality.startsWith("2D") : m.pretraining_class === p).map((m) => m.name));
+    render();
+  });
+  for (const id of ["setup", "fig"]) document.getElementById(id).addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return; st[id] = b.dataset.v; if (id === "setup" && st.setup === "default") st.rank = "mean"; render();
+  });
+  document.getElementById("rank").onchange = (e) => { st.rank = e.target.value; render(); };
+  const fname = () => `lungfm-atlas_${st.fig}_${selTasks().length}tasks`;
+  document.getElementById("dsvg").onclick = () => download(fname() + ".svg", document.getElementById("figure").dataset.svg || "", "image/svg+xml");
+  document.getElementById("dpng").onclick = () => downloadPNG(fname() + ".png", document.getElementById("figure").dataset.svg || "", 300 / 96);
+  document.getElementById("dcsv").onclick = () => download(fname() + ".csv", window.__csv ? window.__csv() : "", "text/csv");
+  document.getElementById("dlink").onclick = async (e) => { try { await navigator.clipboard.writeText(location.href); e.target.textContent = "Link copied"; setTimeout(() => (e.target.textContent = "Copy link"), 1500); } catch { prompt("Copy this link", location.href); } };
+  render();
+</script>

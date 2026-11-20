@@ -5,7 +5,7 @@ import path from "node:path";
 import { chromium } from "playwright";
 const BASE = "/lungfm-atlas.github.io";
 const root = path.resolve("dist");
-const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml", ".csv": "text/csv" };
+const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml", ".csv": "text/csv", ".png": "image/png" };
 const srv = http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split("?")[0]);
   if (!p.startsWith(BASE)) { res.writeHead(404); return res.end(); }
@@ -24,7 +24,7 @@ for (const [w, tag] of [[1280, "desktop"], [390, "phone"]]) {
   page.on("console", (m) => { if (m.type() === "error") errors.push(`${tag} ${page.url()}: ${m.text()}`); });
   for (const p of pages) {
     await page.goto(`http://localhost:4321${BASE}${p}`, { waitUntil: "networkidle" });
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(+(process.env.WAIT || 400));
     const name = (p.replace(/[/?=]/g, "_") || "_home").replace(/^_+|_+$/g, "") || "home";
     await page.screenshot({ path: `.shots/${tag}_${name}.png`, fullPage: true });
   }

@@ -62,3 +62,22 @@ export function tooltip() {
 
 export const GROUPS = ["Screening malignancy", "Radiologist suspicion", "Pathology malignancy",
   "Stage, subtype, mutation, survival"];
+
+// short task names used in graphs and figures
+export const SHORT = { "Malignancy (screening)": "malignancy", "Radiologist suspicion label": "suspicion",
+  "Malignancy (pathology cohort)": "malignancy", "T3–4 vs T1–2 (T stage)": "T stage", "N+ vs N0 (N stage)": "N stage",
+  "Squamous vs adenocarcinoma": "squamous", "EGFR mutation": "EGFR", "KRAS mutation": "KRAS", "Overall survival": "survival" };
+export const taskLabel = (t) => `${t.cohort} ${SHORT[t.task] ?? t.task}`;
+// encoder family colors (University of Arizona palette)
+export const FAMILY_COLOR = { "3D CT encoders": "#1E5288", "2D medical and natural-image encoders": "#81CEEB", "Lung cancer–trained encoders": "#AB0520" };
+export const COMPARATORS = ["Diameter", "Diameter-only logistic model", "Brock model", "Radiomics", "Random-weight encoder"];
+// cohorts named in a model's overlap text: [{cohort, kind: "excluded" | "plausible"}]
+export function parseOverlap(text, cohortNames) {
+  const out = [];
+  for (const m of (text || "").matchAll(/([^()]+?)\s*\(([^)]*)\)/g)) {
+    const kind = /plausible/.test(m[2]) ? "plausible" : /excluded/.test(m[2]) ? "excluded" : null;
+    if (!kind) continue;
+    for (const n of m[1].replace(/^;\s*/, "").split(",").map((x) => x.trim())) if (cohortNames.includes(n)) out.push({ cohort: n, kind });
+  }
+  return out;
+}

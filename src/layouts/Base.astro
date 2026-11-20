@@ -4,8 +4,8 @@ interface Props { title: string; description?: string; active?: string }
 const { title, description = "An open benchmark of 18 public CT foundation models across 16 lung cancer prediction tasks in 12 public cohorts.", active = "" } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const nav = [
-  ["Explorer", "/explorer"], ["Models", "/models"], ["Tasks", "/tasks"], ["Model setups", "/setups"],
-  ["Which model?", "/guide"], ["About", "/about"],
+  ["Explorer", "/explorer"], ["Network", "/network"], ["Build", "/build"], ["Models", "/models"], ["Tasks", "/tasks"],
+  ["Model setups", "/setups"], ["Which model?", "/guide"], ["About", "/about"],
 ];
 ---
 <!doctype html>
@@ -20,12 +20,12 @@ const nav = [
   <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <header class="site-header">
     <div class="wrap">
-      <a class="brand" href={`${base}/`}><span class="mark">FM</span>LungFM Atlas</a>
+      <a class="brand" href={`${base}/`} aria-label="LungFM Atlas home"><img src={`${base}/brand/tusharlab-mark.svg`} alt="Tushar Lab" /><span class="sep"></span>LungFM Atlas</a>
       <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
       <nav class="nav">
         {nav.map(([label, href]) => <a href={`${base}${href}/`} class={active === href ? "active" : ""}>{label}</a>)}
@@ -36,24 +36,36 @@ const nav = [
     <slot />
   </main>
   <footer class="site-footer">
+    <div class="wrap affil">
+      <a href="https://tusharlabratory.github.io/" aria-label="Tushar Lab"><img class="lab" src={`${base}/brand/tusharlab-logo-crop.svg`} alt="Tushar Lab" /></a>
+      <span class="div" aria-hidden="true"></span>
+      <a href="https://radiology.arizona.edu/" aria-label="Department of Radiology and Imaging Sciences, University of Arizona"><img class="dept" src={`${base}/brand/radiology-imaging-sciences.png`} alt="Radiology and Imaging Sciences, University of Arizona" /></a>
+    </div>
     <div class="wrap cols">
       <div>
-        <b style="color:#fff;font-family:var(--font-head)">LungFM Atlas</b>
+        <b style="font-family:var(--font-head);font-size:1.05rem">LungFM Atlas</b>
         <p style="margin-top:6px">Results of a multicohort benchmark of frozen CT foundation models for lung cancer prediction. All numbers are aggregated study results with 95% confidence intervals; no participant-level data are shown.</p>
       </div>
       <div>
-        <b style="color:#fff">Explore</b><br />
+        <b>Explore</b><br />
         <a href={`${base}/explorer/`}>Explorer</a><br />
+        <a href={`${base}/network/`}>Network</a><br />
+        <a href={`${base}/build/`}>Build a comparison</a><br />
         <a href={`${base}/models/`}>Models</a><br />
         <a href={`${base}/tasks/`}>Tasks and cohorts</a><br />
         <a href={`${base}/guide/`}>Which model?</a>
       </div>
       <div>
-        <b style="color:#fff">Lab</b><br />
+        <b>Lab</b><br />
         <a href="https://tusharlabratory.github.io/">Tushar Lab</a><br />
-        <a href="https://radiology.arizona.edu/">Department of Medical Imaging, University of Arizona</a><br />
+        <a href="https://radiology.arizona.edu/">Department of Radiology and Imaging Sciences</a><br />
+        University of Arizona<br />
         <a href={`${base}/about/`}>About, citation and data</a>
       </div>
+    </div>
+    <div class="wrap copy">
+      <span>© 2026 The Arizona Board of Regents on behalf of The University of Arizona.</span>
+      <span>Tushar Lab · Department of Radiology and Imaging Sciences</span>
     </div>
   </footer>
   <div class="tip" id="tip"></div>
