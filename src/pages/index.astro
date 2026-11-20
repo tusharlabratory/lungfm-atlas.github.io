@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import meta from "../data/meta.json";
+import Findings from "../components/Findings.astro";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const stats = [
   [meta.encoders, "public CT foundation models"], [meta.tasks, "lung cancer prediction tasks"],
@@ -44,25 +45,13 @@ const sections = [
   </div>
 
   <section>
-    <div class="wrap two">
-      <div>
-        <h2 style="margin-top:0">Key findings</h2>
-        <ol class="findings">
-          {meta.key_points1.map((k) => <li>{k}</li>)}
-          {meta.key_points1b.map((k) => <li>{k}</li>)}
-        </ol>
-      </div>
-      <div>
-        <h2 style="margin-top:0">In one sentence</h2>
-        <div class="card" style="margin-bottom:14px">
-          <div class="kicker">Clinical value</div>
-          <p style="margin:.4em 0 0">{meta.summary1}</p>
-        </div>
-        <div class="card">
-          <div class="kicker">What drives performance</div>
-          <p style="margin:.4em 0 0">{meta.summary1b}</p>
-        </div>
-        <p class="note" style="margin-top:16px">Statements are quoted from the two companion articles. Areas under the receiver operating characteristic curve (AUC) are shown with 95% confidence intervals throughout the site.</p>
+    <div class="wrap">
+      <h2 style="margin-top:0">Key findings</h2>
+      <p class="muted" style="max-width:820px">Six results from the two articles. Each number comes straight from the papers; open "Full statement" for the exact wording. AUC = area under the receiver operating characteristic curve; error bars are 95% CIs.</p>
+      <Findings />
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-top:8px">
+        <div class="card"><div class="kicker">In one sentence · clinical value</div><p style="margin:.4em 0 0">{meta.summary1}</p></div>
+        <div class="card"><div class="kicker">In one sentence · what drives performance</div><p style="margin:.4em 0 0">{meta.summary1b}</p></div>
       </div>
     </div>
   </section>

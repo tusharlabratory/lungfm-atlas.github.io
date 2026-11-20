@@ -1,0 +1,169 @@
+---
+// Home-page finding cards: one number, one small chart, one plain headline; the paper's Key Point verbatim on demand.
+// Every number comes from meta.highlights (parsed from the papers by p40_site_export.py) or the task data.
+import meta from "../data/meta.json";
+import tasks from "../data/tasks.json";
+import cells from "../data/task_models.json";
+
+const H = (meta as any).highlights;
+const F = "DM Sans, Arial, sans-serif";
+const C = { fm: "#106AB1", comp: "#545F6B", red: "#AB0520", rose: "#E08996", navy: "#0C234B", grid: "#CBD5E1", ink: "#1E293B", muted: "#64748B", light: "#E2E8F0" };
+const m = (x: number, d = 2) => (x < 0 ? "−" : "") + Math.abs(x).toFixed(d);
+const s = (x: number, d = 3) => (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x).toFixed(d);
+const t = (x: number, y: number, str: string, o: any = {}) =>
+  `<text x="${x}" y="${y}" font-family="${F}" font-size="${o.size ?? 11}" fill="${o.fill ?? C.ink}"${o.anchor ? ` text-anchor="${o.anchor}"` : ""}${o.weight ? ` font-weight="${o.weight}"` : ""}>${str}</text>`;
+const W = 320;
+
+// axis helper: returns X() and the axis svg
+function axis(lo: number, hi: number, x0: number, x1: number, y: number, ticks: number[], fmt: (v: number) => string, zero?: number) {
+  const X = (v: number) => x0 + ((v - lo) / (hi - lo)) * (x1 - x0);
+  let a = `<line x1="${x0}" x2="${x1}" y1="${y}" y2="${y}" stroke="${C.ink}" stroke-width=".8"/>`;
+  for (const v of ticks) a += `<line x1="${X(v)}" x2="${X(v)}" y1="${y}" y2="${y + 3}" stroke="${C.ink}" stroke-width=".8"/>` + t(X(v), y + 14, fmt(v), { anchor: "middle", size: 10, fill: C.muted });
+  return { X, a };
+}
+
+// 1. screening: selected FM setup vs diameter
+const scr = ["T1-LUNA25", "T1-DLCS24"].map((id) => {
+  const tk = tasks.find((x) => x.id === id)!;
+  const d = cells.find((c) => c.task === id && c.model === "Diameter")!;
+  return { name: tk.cohort, fm: tk.selected as number[], dia: d.auc as number[] };
+});
+const c1 = (() => {
+  const { X, a } = axis(0.6, 0.9, 92, W - 16, 112, [0.6, 0.7, 0.8, 0.9], (v) => v.toFixed(1));
+  let g = "";
+  scr.forEach((r, i) => {
+    const y = 22 + i * 44;
+    g += t(0, y + 10, r.name, { weight: 600 });
+    [[r.fm, C.fm, -7], [r.dia, C.comp, 7]].forEach(([v, col, dy]: any) => {
+      g += `<line x1="${X(v[1])}" x2="${X(v[2])}" y1="${y + 6 + dy}" y2="${y + 6 + dy}" stroke="${col}" stroke-width="2"/><circle cx="${X(v[0])}" cy="${y + 6 + dy}" r="4.5" fill="${col}"/>`;
+    });
+  });
+  g += `<circle cx="92" cy="140" r="4" fill="${C.fm}"/>` + t(100, 144, "Foundation model", { size: 10 }) + `<circle cx="206" cy="140" r="4" fill="${C.comp}"/>` + t(214, 144, "Nodule diameter", { size: 10 });
+  return `<svg viewBox="0 0 ${W} 150" role="img" aria-label="AUC of the selected foundation model setup and of nodule diameter in LUNA25-Dev and DLCS24">${g}${a}</svg>`;
+})();
+
+// 2. share of setups above the random-weight encoder vs above clinical comparators
+const c2 = (() => {
+  const { X, a } = axis(0, 100, 12, W - 20, 108, [0, 25, 50, 75, 100], (v) => `${v}%`);
+  const [p, lo, hi] = H.above_random;
+  let g = t(8, 14, "Above the random-weight encoder", { size: 10.5, weight: 600 });
+  g += `<rect x="${X(0)}" y="20" width="${X(p) - X(0)}" height="22" rx="4" fill="${C.fm}"/><line x1="${X(lo)}" x2="${X(hi)}" y1="31" y2="31" stroke="${C.navy}" stroke-width="1.6"/>`;
+  g += t(X(p) - 6, 35, `${p.toFixed(1)}%`, { anchor: "end", fill: "#fff", weight: 700, size: 11 });
+  g += t(8, 64, "Above diameter, Brock model or radiomics", { size: 10.5, weight: 600 });
+  g += `<rect x="${X(0)}" y="70" width="${Math.max(3, X(H.above_comparators_max) - X(0))}" height="22" rx="4" fill="${C.red}"/>` + t(X(H.above_comparators_max) + 6, 85, `${H.above_comparators_max.toFixed(1)}% or fewer`, { weight: 700, fill: C.red });
+  return `<svg viewBox="0 0 ${W} 126" role="img" aria-label="Share of foundation model setups above the random-weight encoder and above clinical comparators">${g}${a}</svg>`;
+})();
+
+// 3. added value over diameter (difference in AUC)
+const c3 = (() => {
+  const { X, a } = axis(-0.05, 0.05, 92, W - 22, 98, [-0.04, -0.02, 0, 0.02, 0.04], (v) => (v === 0 ? "0" : s(v, 2)));
+  let g = `<line x1="${X(0)}" x2="${X(0)}" y1="8" y2="98" stroke="${C.grid}" stroke-dasharray="3 3"/>`;
+  Object.entries(H.added_to_diameter).forEach(([k, v]: any, i) => {
+    const y = 26 + i * 38;
+    g += t(0, y + 4, k, { weight: 600 }) + `<line x1="${X(v[1])}" x2="${X(v[2])}" y1="${y}" y2="${y}" stroke="${C.fm}" stroke-width="2"/><rect x="${X(v[0]) - 4.5}" y="${y - 4.5}" width="9" height="9" fill="${C.fm}" transform="rotate(45 ${X(v[0])} ${y})"/>`;
+  });
+  g += t(X(0), 128, "Change in AUC when added to diameter", { anchor: "middle", size: 10, fill: C.muted });
+  return `<svg viewBox="0 0 ${W} 134" role="img" aria-label="Change in AUC when the foundation model score is added to nodule diameter">${g}${a}</svg>`;
+})();
+
+// 4. variance shares (external test)
+const c4 = (() => {
+  const v = H.variance_external as [string, number][];
+  const hot: Record<string, string> = { Encoder: C.red, "Encoder × task": C.rose, Classifier: C.navy };
+  const { X } = axis(0, 40, 118, W - 40, 0, [], String);
+  let g = "";
+  v.forEach(([k, p], i) => {
+    const y = 6 + i * 17;
+    g += t(112, y + 10, k, { anchor: "end", size: 10.5, weight: hot[k] ? 700 : 400, fill: hot[k] ? C.ink : C.muted });
+    g += `<rect x="118" y="${y}" width="${Math.max(2, X(p) - X(0))}" height="12" rx="3" fill="${hot[k] ?? "#B8C2CE"}"/>` + t(Math.max(X(p), 120) + 5, y + 10, `${p.toFixed(1)}%`, { size: 10.5, weight: hot[k] ? 700 : 400 });
+  });
+  return `<svg viewBox="0 0 ${W} ${10 + v.length * 17}" role="img" aria-label="Share of variance in external test AUC by factor">${g}</svg>`;
+})();
+
+// 5. classifiers vs L2 logistic regression (external test)
+const c5 = (() => {
+  const cl = H.classifiers_vs_l2_external as [string, number[]][];
+  const short: Record<string, string> = { "L1-regularized logistic regression": "L1 logistic", "Elastic-net logistic regression": "Elastic-net logistic", "Shrinkage linear discriminant analysis": "Shrinkage LDA",
+    "Linear support vector machine": "Linear SVM", "Radial basis support vector machine": "RBF SVM", "Cosine k-nearest neighbors": "Cosine kNN" };
+  const rh = 12.5, top = 6, yAx = top + cl.length * rh + 4;
+  const { X, a } = axis(-0.04, 0.02, 112, W - 24, yAx, [-0.04, -0.02, 0, 0.02], (v) => (v === 0 ? "0" : s(v, 2)));
+  let g = `<line x1="${X(0)}" x2="${X(0)}" y1="${top}" y2="${yAx}" stroke="${C.grid}" stroke-dasharray="3 3"/>`;
+  cl.forEach(([k, v], i) => {
+    const y = top + i * rh + rh / 2;
+    g += t(106, y + 3.5, short[k] ?? k, { anchor: "end", size: 9.5, fill: C.muted }) + `<line x1="${X(v[1])}" x2="${X(v[2])}" y1="${y}" y2="${y}" stroke="${C.navy}" stroke-width="1.5"/><circle cx="${X(v[0])}" cy="${y}" r="3" fill="${C.navy}"/>`;
+  });
+  g += t((112 + W - 24) / 2, yAx + 28, "Difference in AUC from L2 logistic regression", { anchor: "middle", size: 10, fill: C.muted });
+  return `<svg viewBox="0 0 ${W} ${yAx + 34}" role="img" aria-label="Difference in external test AUC of 12 classifiers from L2-regularized logistic regression">${g}${a}</svg>`;
+})();
+
+// 6. external test vs within cohort
+const c6 = (() => {
+  const v = H.external_vs_within as number[];
+  const { X, a } = axis(-0.05, 0.03, 20, W - 20, 70, [-0.04, -0.02, 0, 0.02], (x) => (x === 0 ? "0" : s(x, 2)));
+  let g = `<line x1="${X(0)}" x2="${X(0)}" y1="8" y2="70" stroke="${C.grid}" stroke-dasharray="3 3"/>`;
+  g += t(X(0) + 6, 22, "no difference", { size: 10, fill: C.muted });
+  g += t(X(v[0]), 30, "external test lower", { anchor: "middle", size: 10.5, weight: 700, fill: C.red });
+  g += `<line x1="${X(v[1])}" x2="${X(v[2])}" y1="46" y2="46" stroke="${C.red}" stroke-width="2.5"/><circle cx="${X(v[0])}" cy="46" r="6" fill="${C.red}"/>`;
+  g += t(W / 2, 100, "AUC in external test minus AUC within cohort", { anchor: "middle", size: 10, fill: C.muted });
+  return `<svg viewBox="0 0 ${W} 108" role="img" aria-label="Difference between external test and within-cohort AUC">${g}${a}</svg>`;
+})();
+
+const [l, d] = [scr[0], scr[1]];
+const cards1 = [
+  { stat: `${m(l.fm[0])} vs ${m(l.dia[0])}`, statSub: `${l.name} · DLCS24 ${m(d.fm[0])} vs ${m(d.dia[0])}`, head: "In screening, the best foundation model setup matched nodule diameter but did not beat it", svg: c1, full: meta.key_points1[0] },
+  { stat: `${H.above_random[0].toFixed(1)}% vs ≤${H.above_comparators_max.toFixed(1)}%`, statSub: "of foundation model setups (exploratory, external test)", head: "Most setups scored above an untrained network; almost none scored above the clinical comparators", svg: c2, full: meta.key_points1[1] },
+  { stat: Object.values(H.added_to_diameter).map((v: any) => s(v[0])).join(" / "), statSub: "change in AUC, DLCS24 / LUNA25-Dev", head: "Adding the foundation model score to diameter changed AUC little; both 95% CIs include 0", svg: c3, full: meta.key_points1[2] },
+];
+const vv = Object.fromEntries(H.variance_external);
+const cards2 = [
+  { stat: `${vv["Encoder"].toFixed(1)}% vs ${vv["Classifier"].toFixed(1)}%`, statSub: "share of variance in external test AUC: encoder vs classifier (post hoc)", head: "Which encoder you pick matters far more than which classifier", svg: c4, full: meta.key_points1b[0] },
+  { stat: `0 of ${H.classifiers_vs_l2_external.length}`, statSub: `alternative classifiers above logistic regression (external test); rank-chosen encoder vs full search ${s(H.rank_vs_full[0])}`, head: "No classifier beat plain logistic regression in external testing", svg: c5, full: meta.key_points1b[1] },
+  { stat: s(H.external_vs_within[0]), statSub: `AUC, external test minus within cohort (95% CI: ${m(H.external_vs_within[1], 3)}, ${m(H.external_vs_within[2], 3)})`, head: "Testing within the training cohort gave optimistic estimates", svg: c6, full: meta.key_points1b[2] },
+];
+---
+<div class="fgroup">
+  <div class="fhead"><span>Article 1</span> Clinical value</div>
+  <div class="fgrid">
+    {cards1.map((c) => (
+      <article class="fcard">
+        <div class="fstat">{c.stat}</div>
+        <div class="fsub">{c.statSub}</div>
+        <h3>{c.head}</h3>
+        <div class="fchart" set:html={c.svg} />
+        <details><summary>Full statement</summary><p>{c.full}</p></details>
+      </article>
+    ))}
+  </div>
+</div>
+<div class="fgroup">
+  <div class="fhead"><span>Article 2</span> What drives performance</div>
+  <div class="fgrid">
+    {cards2.map((c) => (
+      <article class="fcard">
+        <div class="fstat">{c.stat}</div>
+        <div class="fsub">{c.statSub}</div>
+        <h3>{c.head}</h3>
+        <div class="fchart" set:html={c.svg} />
+        <details><summary>Full statement</summary><p>{c.full}</p></details>
+      </article>
+    ))}
+  </div>
+</div>
+
+<style>
+  .fgroup { margin-bottom: 26px; }
+  .fhead { font-family: var(--font-head); font-size: 1.15rem; font-weight: 700; color: var(--head); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .fhead span { font-family: var(--font); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: var(--az-red); border-radius: 99px; padding: 3px 10px; }
+  .fgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  @media (max-width: 980px) { .fgrid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .fgrid { grid-template-columns: 1fr; } }
+  .fcard { background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--az-red); border-radius: 12px; padding: 16px 18px 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .fstat { font-family: var(--font-head); font-size: 1.9rem; font-weight: 700; color: var(--az-red); line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .fsub { font-size: .78rem; color: var(--muted); margin: 3px 0 8px; }
+  .fcard h3 { font-family: var(--font); font-size: 1rem; font-weight: 700; color: var(--head); line-height: 1.35; margin: 0 0 10px; }
+  .fchart { margin-top: auto; }
+  .fchart :global(svg) { width: 100%; height: auto; display: block; }
+  details { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 8px; }
+  summary { cursor: pointer; font-size: .82rem; font-weight: 600; color: var(--arroyo); }
+  details p { font-size: .84rem; color: #334155; margin: 8px 0 2px; }
+</style>
